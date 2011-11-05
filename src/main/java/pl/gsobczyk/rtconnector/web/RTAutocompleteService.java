@@ -1,8 +1,12 @@
 package pl.gsobczyk.rtconnector.web;
 
+import java.util.Collection;
+
+import pl.gsobczyk.rtconnector.domain.Queue;
+
 public interface RTAutocompleteService {
-	String findQueue(String like);
-	String findClient(String like);
-	String findProject(String like);
-	String findClearing(String like);
+	Collection<Queue> findQueues(String like);
+	Iterable<String> findClients(String like);
+	Iterable<String> findProjects(String clientLike, String procjetLike);
+	Iterable<String> findClearings(String like);
 }

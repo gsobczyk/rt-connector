@@ -33,7 +33,7 @@ public class SimpleRTDao implements RTDao {
 	public static final String P_RT_URL = "rt.url";
 	public static final String P_USER = "rt.user";
 	public static final String P_PASSWORD = "rt.password";
-	private static final int CACHE_LIMIT = 30;
+//	private static final int CACHE_LIMIT = 30;
 	@Autowired private RestTemplate restTemplate;
 	@Autowired private Environment env;
 	private String user;
@@ -44,9 +44,9 @@ public class SimpleRTDao implements RTDao {
 
 	@PostConstruct
 	public void postConstruct(){
-		user = env.getProperty(P_USER);
-		pass = env.getProperty(P_PASSWORD);
-		rtUrl = env.getProperty(P_RT_URL);
+		user = env.getRequiredProperty(P_USER);
+		pass = env.getRequiredProperty(P_PASSWORD);
+		rtUrl = env.getRequiredProperty(P_RT_URL);
 		restUrl = rtUrl+D_REST_CONTEXT;
 		login();
 	}
@@ -136,7 +136,8 @@ public class SimpleRTDao implements RTDao {
 		return restTemplate.getForObject(restUrl+RestAction.QUEUE, Queue.class, i);
 	}
 
-	public List<Queue> getQueues() {
+	@Override
+	public List<Queue> getAllQueues() {
 		if (CollectionUtils.isEmpty(queueCache)){
 			fillQueueCache();
 		}

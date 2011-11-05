@@ -73,7 +73,7 @@ public class SimpleRTDaoTest {
 		rtDao.login();
 
 		// when
-		List<Queue> queues = rtDao.getQueues();
+		List<Queue> queues = rtDao.getAllQueues();
 
 		// then
 		Assert.assertTrue(!CollectionUtils.isEmpty(queues));

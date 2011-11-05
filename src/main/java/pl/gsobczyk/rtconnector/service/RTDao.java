@@ -15,4 +15,5 @@ public interface RTDao {
 	void closeTicket(Ticket ticket);
 	void takeTicket(Ticket ticket);
 	Queue getQueue(Long id);
+	List<Queue> getAllQueues();
 }
