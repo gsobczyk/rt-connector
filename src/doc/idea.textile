@@ -1,0 +1,75 @@
+h1. Format linii
+
+h2. Dozwolone formaty:
+
+Podstawowy format:
+
+bc. kolejka > klient/projekt > rozliczający > temat
+
+np. 
+
+bc. ds-incoming > ab/platforma > rege > Z#34 Zmiany w wyszukiwarce
+
+Zadanie podrzędne:
+
+bc. #[ticket]:tytul > zadanie podrzędne
+
+Rozpoznawanie nr. ticketa po fragmencie @#[id]:@ 
+
+np.
+
+bc. #63496: ALSEN - modyfikacje > Z#34 Zmiany w wyszukiwarce
+
+h1. REST w RT
+
+"http://requesttracker.wikia.com/wiki/REST":http://requesttracker.wikia.com/wiki/REST 
+
+h2. Tworzenie
+
+bc. /REST/1.0/ticket/new
+
+content:
+
+bc. 
+id: ticket/new
+Requestor: grzegorz.sobczyk@contium.pl
+Subject: Testowanie rest
+Text: treść ticketa
+ druga linia (spacja na początku linii)
+Queue: AAleSmietnik
+
+h3. parametry
+
+* id: ticket/new
+* Queue: <queue name - *musi być na końcu!*>
+* Requestor: <requestor email address>
+* Subject: <subject>
+* -Cc: <...>-
+* -AdminCc: <...>-
+* -Owner: <...>-
+* -Status: <...>-
+* -Priority: <...>-
+* -InitialPriority: <...>-
+* -FinalPriority: <...>-
+* -TimeEstimated: <...>-
+* -Starts: <...>-
+* -Due: <...>-
+* Text: <The ticket content>
+* CF.{<CustomFieldName>}: <CustomFieldValue>
+
+h2. Przypisywanie:
+
+bc. /REST/1.0/ticket/<id>/edit
+
+content:
+
+bc. Owner: gsobczyk
+
+h2. Podpowiedzi:
+
+# Klient:
+#* @/Helpers/Autocomplete/CustomFieldValues?Object---CustomField-16-Value=<klient>@
+# Projekt:
+#* @/Helpers/Autocomplete/CustomFieldValues?Object---CustomField-21-Value=MIG/%<fragment nazwy projektu>@
+#* Rozliczający:
+#* @https://rt.contium.pl/Helpers/Autocomplete/CustomFieldValues?Object---CustomField-17-Value=<rozliczający>@

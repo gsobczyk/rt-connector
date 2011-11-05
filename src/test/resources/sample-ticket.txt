@@ -1,0 +1,30 @@
+RT/3.8.9 200 Ok
+
+id: ticket/64128
+Queue: DRiW-RREGENCZUK
+Owner: gsobczyk
+Creator: gsobczyk
+Subject: AB - PP - Spotkania
+Status: open
+Priority: 0
+InitialPriority: 0
+FinalPriority: 0
+Requestors: grzegorz.sobczyk@contium.pl
+Cc:
+AdminCc:
+Created: Thu Apr 21 10:15:55 2011
+Starts: Not set
+Started: Fri Apr 22 16:28:07 2011
+Due: Not set
+Resolved: Not set
+Told: Not set
+LastUpdated: Fri Aug 26 16:29:38 2011
+TimeEstimated: 0
+TimeWorked: 890 minutes
+TimeLeft: 0
+CF.{Klient}: AB
+CF.{Projekt}: AB/2011-Platforma partnerska
+CF.{Rozliczajacy}: Robert Regeńczuk
+CF.{SPUrl}: ab/2011-platforma_partnerska
+CF.{Target}: 
+

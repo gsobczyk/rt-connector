@@ -1,0 +1,37 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+Nowy ticket
+  <form action="https://rt.contium.pl/REST/1.0/ticket/new" method="post" enctype="multipart/form-data">
+    <textarea name="content">id: ticket/new
+Requestor: grzegorz.sobczyk@contium.pl
+Owner: gsobczyk
+Subject: Testowanie rest
+Text: treść ticketa nowa linia
+Queue: AAleSmietnik</textarea>
+    <input type="submit"/>
+  </form>
+
+Przypisz Ticket 70670
+  <form action="https://rt.contium.pl/REST/1.0/ticket/70670/edit" method="post" enctype="multipart/form-data">
+    <textarea name="content">Owner: gsobczyk</textarea>
+    <input type="submit"/>
+  </form>
+
+Aktualizacja czasu 70670
+  <form action="https://rt.contium.pl/REST/1.0/ticket/70670/edit" method="post" enctype="multipart/form-data">
+    <textarea name="content">TimeWorked: 20</textarea>
+    <input type="submit"/>
+  </form>
+  
+Komentarz 70670
+  <form action="https://rt.contium.pl/REST/1.0/ticket/70670/comment" method="post" enctype="multipart/form-data">
+    <textarea name="content">TimeWorked: 2
+Text: prace / konsultacje
+Action: comment</textarea>
+    <input type="submit"/>
+  </form>
+</body>
+</html>
