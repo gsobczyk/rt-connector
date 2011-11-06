@@ -105,14 +105,14 @@ public class SimpleRTDao implements RTDao {
 	}
 
 	@Override
-	public List<Ticket> findTickets(String queue, String client, String project, String clearing, String name, boolean myTickets) {
+	public List<Ticket> findTickets(String queue, String client, String project, String clearing, String name, boolean onlyMyTickets) {
 		List<FieldQuery> fieldQueries = Lists.newArrayList();
 		fieldQueries.add(new FieldQuery(TicketField.QUEUE, EQUAL, queue));
 		fieldQueries.add(new FieldQuery(TicketField.CLIENT, LIKE, client));
 		fieldQueries.add(new FieldQuery(TicketField.PROJECT, LIKE, project));
 		fieldQueries.add(new FieldQuery(TicketField.CLEARING, LIKE, clearing));
 		fieldQueries.add(new FieldQuery(TicketField.NAME, LIKE, name));
-		if (myTickets){
+		if (onlyMyTickets){
 			fieldQueries.add(new FieldQuery(TicketField.OWNER, EQUAL, user));
 		}
 		List<String> queries = Lists.newArrayList();
@@ -139,8 +139,8 @@ public class SimpleRTDao implements RTDao {
 	}
 
 	@Override
-	public List<Ticket> findTickets(Ticket parent, String name, boolean myTickets) {
-		return findTickets(parent.getQueue(), parent.getClient(), parent.getProject(), parent.getClearing(), name, myTickets);
+	public List<Ticket> findTickets(Ticket parent, String name, boolean onlyMyTickets) {
+		return findTickets(parent.getQueue(), parent.getClient(), parent.getProject(), parent.getClearing(), name, onlyMyTickets);
 	}
 
 	@Override
