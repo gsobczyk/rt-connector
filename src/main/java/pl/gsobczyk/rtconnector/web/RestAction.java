@@ -7,6 +7,7 @@ public enum RestAction {
 	GET("ticket/{ticketId}/show"),
 	COMMENT("ticket/{ticketId}/comment"),
 	EDIT("ticket/{ticketId}/edit"),
+	QUERY("search/ticket?query={query}"),
 	QUEUE("queue/{queueId}");
 	private final String action;
 

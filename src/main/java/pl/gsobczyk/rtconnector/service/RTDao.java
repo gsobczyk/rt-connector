@@ -9,8 +9,8 @@ import pl.gsobczyk.rtconnector.domain.Ticket;
 public interface RTDao {
 	Ticket createTicket(String queue, String client, String project, String clearing, String name);
 	Ticket create(Ticket parent, String name);
-	List<Ticket> findTicket(String query);
-	List<Ticket> findTicket(Ticket parent, String query);
+	List<Ticket> findTickets(String queue, String client, String project, String clearing, String name, boolean myTickets);
+	List<Ticket> findTickets(Ticket parent, String name, boolean myTickets);
 	Ticket getTicket(Long id);
 	RestStatus addTime(Ticket ticket, int minutes);
 	RestStatus takeTicket(Ticket ticket);

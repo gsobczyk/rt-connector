@@ -129,4 +129,15 @@ public class SimpleRTDaoTest {
 		// then
 		Assert.assertTrue(map.size()==39);
 	}
+	
+	@Test
+	public void shouldFindTestTickets() throws Exception {
+		// given
+
+		// when
+		List<Ticket> tickets = rtDao.findTickets("AAleSmietnik", "", "", "Radosław Przychoda", "", false);
+
+		// then
+		Assert.assertFalse(tickets.isEmpty());
+	}
 }

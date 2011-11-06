@@ -1,15 +1,19 @@
 package pl.gsobczyk.rtconnector.service;
 
+import static pl.gsobczyk.rtconnector.service.FieldQuery.Operator.EQUAL;
+import static pl.gsobczyk.rtconnector.service.FieldQuery.Operator.LIKE;
 import static pl.gsobczyk.rtconnector.web.RestAction.COMMENT;
 import static pl.gsobczyk.rtconnector.web.RestAction.CREATE;
 import static pl.gsobczyk.rtconnector.web.RestAction.EDIT;
 import static pl.gsobczyk.rtconnector.web.RestAction.GET;
 import static pl.gsobczyk.rtconnector.web.RestAction.LOGIN;
 import static pl.gsobczyk.rtconnector.web.RestAction.LOGOUT;
+import static pl.gsobczyk.rtconnector.web.RestAction.QUERY;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,20 +21,24 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import pl.gsobczyk.rtconnector.domain.Queue;
 import pl.gsobczyk.rtconnector.domain.RestStatus;
 import pl.gsobczyk.rtconnector.domain.Ticket;
 import pl.gsobczyk.rtconnector.domain.TicketAction;
+import pl.gsobczyk.rtconnector.domain.TicketField;
 import pl.gsobczyk.rtconnector.web.RestAction;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 @Repository
@@ -97,15 +105,42 @@ public class SimpleRTDao implements RTDao {
 	}
 
 	@Override
-	public List<Ticket> findTicket(String query) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Ticket> findTickets(String queue, String client, String project, String clearing, String name, boolean myTickets) {
+		List<FieldQuery> fieldQueries = Lists.newArrayList();
+		fieldQueries.add(new FieldQuery(TicketField.QUEUE, EQUAL, queue));
+		fieldQueries.add(new FieldQuery(TicketField.CLIENT, LIKE, client));
+		fieldQueries.add(new FieldQuery(TicketField.PROJECT, LIKE, project));
+		fieldQueries.add(new FieldQuery(TicketField.CLEARING, LIKE, clearing));
+		fieldQueries.add(new FieldQuery(TicketField.NAME, LIKE, name));
+		if (myTickets){
+			fieldQueries.add(new FieldQuery(TicketField.OWNER, EQUAL, user));
+		}
+		List<String> queries = Lists.newArrayList();
+		for (FieldQuery fieldQuery : fieldQueries) {
+			String query = fieldQuery.toString();
+			if (StringUtils.hasText(query)){
+				queries.add(query);
+			}
+		}
+		String queryString = StringUtils.collectionToDelimitedString(queries, " AND ");
+		if (StringUtils.hasText(queryString)){
+			queryString+=" AND ";
+		}
+		queryString += "( Status = 'new' OR Status = 'open' )";
+		Map<String, String> map = restTemplate.getForObject(restUrl+QUERY, Map.class, queryString);
+		List<Ticket> result = Lists.newArrayList();
+		for (String key : map.keySet()) {
+			if (NumberUtils.isDigits(key)){
+				Long id = Long.valueOf(key);
+				result.add(getTicket(id));
+			}
+		}
+		return result;
 	}
 
 	@Override
-	public List<Ticket> findTicket(Ticket parent, String query) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Ticket> findTickets(Ticket parent, String name, boolean myTickets) {
+		return findTickets(parent.getQueue(), parent.getClient(), parent.getProject(), parent.getClearing(), name, myTickets);
 	}
 
 	@Override
