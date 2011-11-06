@@ -1,5 +1,6 @@
 package pl.gsobczyk.rtconnector.service;
 
+import static pl.gsobczyk.rtconnector.web.RestAction.COMMENT;
 import static pl.gsobczyk.rtconnector.web.RestAction.CREATE;
 import static pl.gsobczyk.rtconnector.web.RestAction.EDIT;
 import static pl.gsobczyk.rtconnector.web.RestAction.GET;
@@ -25,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import pl.gsobczyk.rtconnector.domain.Queue;
 import pl.gsobczyk.rtconnector.domain.RestStatus;
 import pl.gsobczyk.rtconnector.domain.Ticket;
+import pl.gsobczyk.rtconnector.domain.TicketAction;
 import pl.gsobczyk.rtconnector.web.RestAction;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -112,20 +114,25 @@ public class SimpleRTDao implements RTDao {
 	}
 
 	@Override
-	public void addTime(Ticket ticket, int minutes) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void closeTicket(Ticket ticket) {
-		// TODO Auto-generated method stub
-		
+	public RestStatus addTime(Ticket ticket, int minutes) {
+		Ticket addTime = new Ticket();
+		addTime.setId(ticket.getId());
+		addTime.setTimeWorked(minutes);
+		addTime.setAction(TicketAction.COMMENT);
+		addTime.setText("Aktualizacja czasu pracy - automat");
+		RestStatus result = restTemplate.postForObject(restUrl+COMMENT, addTime, RestStatus.class, ticket.getId());
+		int newMinutes = minutes;
+		if (ticket.getTimeWorked()!=null){
+			newMinutes+=ticket.getTimeWorked();
+		}
+		ticket.setTimeWorked(newMinutes);
+		return result;
 	}
 
 	@Override
 	public RestStatus takeTicket(Ticket ticket) {
 		Ticket take = new Ticket();
+		take.setId(ticket.getId());
 		take.setOwner(user);
 		RestStatus result = restTemplate.postForObject(restUrl+EDIT, take, RestStatus.class, ticket.getId());
 		ticket.setOwner(take.getOwner());

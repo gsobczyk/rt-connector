@@ -27,13 +27,20 @@ public abstract class TicketField<T> extends Field<T, Ticket> {
 		@Override public void setValue(Ticket ticket, String value) {
 			ticket.setName(value);
 		}};
-		public static final TicketField<String> OWNER = new TicketField<String>("Owner"){
-			@Override public String getValue(Ticket ticket) {
-				return ticket.getOwner();
-			}
-			@Override public void setValue(Ticket ticket, String value) {
-				ticket.setOwner(value);
-			}};
+	public static final TicketField<String> TEXT = new TicketField<String>("Text"){
+		@Override public String getValue(Ticket ticket) {
+			return ticket.getText();
+		}
+		@Override public void setValue(Ticket ticket, String value) {
+			ticket.setText(value);
+		}};
+	public static final TicketField<String> OWNER = new TicketField<String>("Owner"){
+		@Override public String getValue(Ticket ticket) {
+			return ticket.getOwner();
+		}
+		@Override public void setValue(Ticket ticket, String value) {
+			ticket.setOwner(value);
+		}};
 	public static final TicketField<Integer> TIME_WORKED = new TicketField<Integer>("TimeWorked"){
 		@Override public Integer getValue(Ticket ticket) {
 			return ticket.getTimeWorked();
@@ -61,6 +68,14 @@ public abstract class TicketField<T> extends Field<T, Ticket> {
 		}
 		@Override public void setValue(Ticket ticket, String value) {
 			ticket.setProject(value);
+		}};
+
+	public static final TicketField<TicketAction> ACTION = new TicketField<TicketAction>("Action"){
+		@Override public TicketAction getValue(Ticket ticket) {
+			return ticket.getAction();
+		}
+		@Override public void setValue(Ticket ticket, TicketAction value) {
+			ticket.setAction(value);
 		}};
 
 }

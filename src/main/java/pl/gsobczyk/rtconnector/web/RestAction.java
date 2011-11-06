@@ -5,6 +5,7 @@ public enum RestAction {
 	LOGOUT("logout"), 
 	CREATE("ticket/new"),
 	GET("ticket/{ticketId}/show"),
+	COMMENT("ticket/{ticketId}/comment"),
 	EDIT("ticket/{ticketId}/edit"),
 	QUEUE("queue/{queueId}");
 	private final String action;

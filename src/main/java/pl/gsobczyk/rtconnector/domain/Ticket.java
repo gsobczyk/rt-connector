@@ -14,6 +14,8 @@ public class Ticket {
 	private String clearing;
 	private String owner;
 	private Integer timeWorked;
+	private String text;
+	private TicketAction action;
 	
 	public Long getId() {
 		return id;
@@ -67,5 +69,17 @@ public class Ticket {
 	@Override
 	public boolean equals(Object obj) {
 		return EqualsBuilder.reflectionEquals(this, obj);
+	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	public TicketAction getAction() {
+		return action;
+	}
+	public void setAction(TicketAction action) {
+		this.action = action;
 	}
 }

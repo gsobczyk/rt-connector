@@ -1,5 +1,6 @@
 package pl.gsobczyk.rtconnector.web;
 
+import static pl.gsobczyk.rtconnector.domain.TicketField.ACTION;
 import static pl.gsobczyk.rtconnector.domain.TicketField.CLEARING;
 import static pl.gsobczyk.rtconnector.domain.TicketField.CLIENT;
 import static pl.gsobczyk.rtconnector.domain.TicketField.ID;
@@ -7,6 +8,7 @@ import static pl.gsobczyk.rtconnector.domain.TicketField.NAME;
 import static pl.gsobczyk.rtconnector.domain.TicketField.OWNER;
 import static pl.gsobczyk.rtconnector.domain.TicketField.PROJECT;
 import static pl.gsobczyk.rtconnector.domain.TicketField.QUEUE;
+import static pl.gsobczyk.rtconnector.domain.TicketField.TEXT;
 import static pl.gsobczyk.rtconnector.domain.TicketField.TIME_WORKED;
 
 import java.util.Map;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import pl.gsobczyk.rtconnector.domain.Field;
 import pl.gsobczyk.rtconnector.domain.Ticket;
+import pl.gsobczyk.rtconnector.domain.TicketAction;
 import pl.gsobczyk.rtconnector.domain.TicketField;
 
 import com.google.common.collect.Maps;
@@ -43,6 +46,7 @@ public class TicketMessageConverter extends RTConverter<Ticket> {
 		CLEARING.setValue(ticket, map.get(CLEARING.getName()));
 		CLIENT.setValue(ticket, map.get(CLIENT.getName()));
 		PROJECT.setValue(ticket, map.get(PROJECT.getName()));
+		TEXT.setValue(ticket, map.get(TEXT.getName()));
 		String timeWorked = map.get(TIME_WORKED.getName());
 		timeWorked = timeWorked.split("\\s")[0];
 		TIME_WORKED.setValue(ticket, NumberUtils.createInteger(timeWorked));
@@ -62,9 +66,14 @@ public class TicketMessageConverter extends RTConverter<Ticket> {
 		map.put(CLEARING, CLEARING.getValue(ticket));
 		map.put(CLIENT, CLIENT.getValue(ticket));
 		map.put(PROJECT, PROJECT.getValue(ticket));
+		map.put(TEXT, TEXT.getValue(ticket));
 		Integer timeWorked = TIME_WORKED.getValue(ticket);
 		if (timeWorked!=null){
 			map.put(TIME_WORKED, Integer.toString(timeWorked));
+		}
+		TicketAction action = ACTION.getValue(ticket);
+		if (action!=null){
+			map.put(ACTION, action.toString());//must be last!
 		}
 		map.put(QUEUE, QUEUE.getValue(ticket));//must be last!
 		return map;

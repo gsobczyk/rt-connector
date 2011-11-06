@@ -69,6 +69,20 @@ public class SimpleRTDaoTest {
 	}
 	
 	@Test
+	public void shouldAddTime() throws Exception {
+		// given
+		Long id=70670L;
+		Ticket ticket = rtDao.getTicket(id);
+		Integer minutes=10+ticket.getTimeWorked();
+
+		// when
+		rtDao.addTime(ticket, 10);
+
+		// then
+		Assert.assertEquals(rtDao.getTicket(id).getTimeWorked(), minutes);
+	}
+	
+	@Test
 	public void shouldCreateTicket() throws Exception {
 		// given
 		SimpleRTDao dao = new SimpleRTDao();

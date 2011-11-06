@@ -12,8 +12,7 @@ public interface RTDao {
 	List<Ticket> findTicket(String query);
 	List<Ticket> findTicket(Ticket parent, String query);
 	Ticket getTicket(Long id);
-	void addTime(Ticket ticket, int minutes);
-	void closeTicket(Ticket ticket);
+	RestStatus addTime(Ticket ticket, int minutes);
 	RestStatus takeTicket(Ticket ticket);
 	Queue getQueue(Long id);
 	List<Queue> getAllQueues();
