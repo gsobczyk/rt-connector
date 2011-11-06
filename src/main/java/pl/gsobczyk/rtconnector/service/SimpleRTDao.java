@@ -1,5 +1,8 @@
 package pl.gsobczyk.rtconnector.service;
 
+import static pl.gsobczyk.rtconnector.web.RestAction.CREATE;
+import static pl.gsobczyk.rtconnector.web.RestAction.EDIT;
+import static pl.gsobczyk.rtconnector.web.RestAction.GET;
 import static pl.gsobczyk.rtconnector.web.RestAction.LOGIN;
 import static pl.gsobczyk.rtconnector.web.RestAction.LOGOUT;
 
@@ -7,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -18,9 +23,11 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import pl.gsobczyk.rtconnector.domain.Queue;
+import pl.gsobczyk.rtconnector.domain.RestStatus;
 import pl.gsobczyk.rtconnector.domain.Ticket;
 import pl.gsobczyk.rtconnector.web.RestAction;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 
@@ -33,7 +40,6 @@ public class SimpleRTDao implements RTDao {
 	public static final String P_RT_URL = "rt.url";
 	public static final String P_USER = "rt.user";
 	public static final String P_PASSWORD = "rt.password";
-//	private static final int CACHE_LIMIT = 30;
 	@Autowired private RestTemplate restTemplate;
 	@Autowired private Environment env;
 	private String user;
@@ -70,9 +76,16 @@ public class SimpleRTDao implements RTDao {
 
 	@Override
 	public Ticket createTicket(String queue, String client, String project, String clearing, String name) {
-		// TODO Auto-generated method stub
-		Ticket ticket = null;
-		takeTicket(ticket);
+		Ticket ticket = new Ticket();
+		ticket.setQueue(queue);
+		ticket.setClient(client);
+		ticket.setProject(project);
+		ticket.setName(name);
+		RestStatus status = restTemplate.postForObject(restUrl+CREATE, ticket, RestStatus.class);
+		Matcher m = Pattern.compile("Ticket (\\d+) created\\.").matcher(status.getMessage());
+		m.find();
+		String id = m.group(1);
+		ticket.setId(Long.parseLong(id));
 		return ticket;
 	}
 
@@ -95,7 +108,7 @@ public class SimpleRTDao implements RTDao {
 
 	@Override
 	public Ticket getTicket(Long id) {
-		return restTemplate.getForObject(restUrl+RestAction.GET, Ticket.class, id);
+		return restTemplate.getForObject(restUrl+GET, Ticket.class, id);
 	}
 
 	@Override
@@ -111,9 +124,12 @@ public class SimpleRTDao implements RTDao {
 	}
 
 	@Override
-	public void takeTicket(Ticket ticket) {
-		// TODO Auto-generated method stub
-		//setOwner
+	public RestStatus takeTicket(Ticket ticket) {
+		Ticket take = new Ticket();
+		take.setOwner(user);
+		RestStatus result = restTemplate.postForObject(restUrl+EDIT, take, RestStatus.class, ticket.getId());
+		ticket.setOwner(take.getOwner());
+		return result;
 	}
 	
 	public boolean isLogged() {
@@ -122,7 +138,9 @@ public class SimpleRTDao implements RTDao {
 
 	private void fillQueueCache() {
 		String html = restTemplate.getForObject(rtUrl+"/Tools/", String.class);
-		HashMap<String, String> map = Maps.newHashMap(HTML_OPTION_SPLITTER.withKeyValueSeparator(HTML_KEY_VALUE_SPLITTER).split(html));
+		Matcher m = Pattern.compile(QUEUE_REGEX).matcher(html);
+		m.find();
+		HashMap<String, String> map = Maps.newHashMap(HTML_OPTION_SPLITTER.withKeyValueSeparator(HTML_KEY_VALUE_SPLITTER).split(m.group(1)));
 		for (Entry<String, String> entry : map.entrySet()) {
 			Queue q = new Queue();
 			q.setId(Long.valueOf(entry.getKey()));
@@ -142,5 +160,9 @@ public class SimpleRTDao implements RTDao {
 			fillQueueCache();
 		}
 		return queueCache;
+	}
+
+	@VisibleForTesting void setRestTemplate(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
 	}
 }

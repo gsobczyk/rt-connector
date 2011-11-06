@@ -1,5 +1,7 @@
 package pl.gsobczyk.rtconnector.service;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -10,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
@@ -20,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import pl.gsobczyk.rtconnector.configuration.AppConfig;
 import pl.gsobczyk.rtconnector.domain.Queue;
+import pl.gsobczyk.rtconnector.domain.RestStatus;
 import pl.gsobczyk.rtconnector.domain.Ticket;
 
 import com.google.common.base.Splitter;
@@ -50,7 +54,6 @@ public class SimpleRTDaoTest {
 		// given
 		// when
 		rtDao.logout();
-
 		// then
 		restTemplate.getForObject(env.getProperty(SimpleRTDao.P_RT_URL)+SimpleRTDao.D_REST_CONTEXT, String.class);
 	}
@@ -59,22 +62,32 @@ public class SimpleRTDaoTest {
 	public void shouldFindTicketById() throws Exception {
 		// given
 		Long id=70670L;
-
 		// when
 		Ticket ticket = rtDao.getTicket(id);
-
 		// then
 		Assert.assertEquals(ticket.getId(), id);
 	}
 	
 	@Test
+	public void shouldCreateTicket() throws Exception {
+		// given
+		SimpleRTDao dao = new SimpleRTDao();
+		RestTemplate template = mock(RestTemplate.class);
+		dao.setRestTemplate(template);
+		RestStatus status = new RestStatus();
+		status.setMessage("Ticket 70883 created.");
+		Mockito.when(template.postForObject(Mockito.anyString(), Mockito.any(Ticket.class), Mockito.eq(RestStatus.class))).thenReturn(status);
+		// when
+		Ticket result = dao.createTicket("AAleSmietnik", null, null, null, "test rest");
+		// then
+		Assert.assertNotNull(result.getId());
+	}
+	
+	@Test
 	public void shouldFillQueueCache() throws Exception {
 		// given
-		rtDao.login();
-
 		// when
 		List<Queue> queues = rtDao.getAllQueues();
-
 		// then
 		Assert.assertTrue(!CollectionUtils.isEmpty(queues));
 	}
@@ -95,13 +108,11 @@ public class SimpleRTDaoTest {
 	public void shouldParseQueuesInHtml() throws Exception {
 		// given
 		String result = IOUtils.toString(new ClassPathResource("queues.fhtml").getInputStream());
-//		result = result.replaceAll("\\r?\\n", "");
 		Splitter optionSplitter = Splitter.onPattern("(</option\\s*>)|(<option\\s+?value=\")|\\1\\s*\\2").trimResults().omitEmptyStrings();
 		Splitter keySplitter = Splitter.onPattern("\"[^>]*>").trimResults().omitEmptyStrings();
-		Map<String, String> map = Maps.newHashMap(optionSplitter.withKeyValueSeparator(keySplitter).split(result));
-		System.out.println(map.size());
 		// when
+		Map<String, String> map = Maps.newHashMap(optionSplitter.withKeyValueSeparator(keySplitter).split(result));
 		// then
-//		Assert.assertTrue(matches);
+		Assert.assertTrue(map.size()==39);
 	}
 }

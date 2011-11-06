@@ -13,6 +13,7 @@ public class Ticket {
 	private String project;
 	private String clearing;
 	private String owner;
+	private Integer timeWorked;
 	
 	public Long getId() {
 		return id;
@@ -55,6 +56,12 @@ public class Ticket {
 	}
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+	public Integer getTimeWorked() {
+		return timeWorked;
+	}
+	public void setTimeWorked(Integer timeWorked) {
+		this.timeWorked = timeWorked;
 	}
 	
 	@Override

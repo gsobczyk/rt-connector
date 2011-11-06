@@ -3,6 +3,7 @@ package pl.gsobczyk.rtconnector.service;
 import java.util.List;
 
 import pl.gsobczyk.rtconnector.domain.Queue;
+import pl.gsobczyk.rtconnector.domain.RestStatus;
 import pl.gsobczyk.rtconnector.domain.Ticket;
 
 public interface RTDao {
@@ -13,7 +14,7 @@ public interface RTDao {
 	Ticket getTicket(Long id);
 	void addTime(Ticket ticket, int minutes);
 	void closeTicket(Ticket ticket);
-	void takeTicket(Ticket ticket);
+	RestStatus takeTicket(Ticket ticket);
 	Queue getQueue(Long id);
 	List<Queue> getAllQueues();
 }

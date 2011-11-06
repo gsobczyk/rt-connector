@@ -2,7 +2,6 @@ package pl.gsobczyk.rtconnector.web;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,46 +14,54 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import pl.gsobczyk.rtconnector.domain.Field;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public abstract class RTConverter<T> extends AbstractHttpMessageConverter<T> {
 	public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-//	@Autowired private FormHttpMessageConverter formHttpMessageConverter;
-	private boolean writeAcceptCharset = true;
+	private FormHttpMessageConverter formHttpMessageConverter = new XmlAwareFormHttpMessageConverter();
 	private List<Charset> availableCharsets;
 	
 	@PostConstruct
 	public void postConstruct(){
-		setSupportedMediaTypes(Lists.newArrayList(new MediaType("text", "plain", DEFAULT_CHARSET), MediaType.ALL));
+		setSupportedMediaTypes(Lists.newArrayList(new MediaType("text", "plain", DEFAULT_CHARSET), MediaType.MULTIPART_FORM_DATA, MediaType.ALL));
 		this.availableCharsets = new ArrayList<Charset>(Charset.availableCharsets().values());
 	}
 	
 	@Override
 	protected void writeInternal(T t, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-		if (writeAcceptCharset) {
-			outputMessage.getHeaders().setAcceptCharset(getAcceptedCharsets());
-		}
-		Charset charset = getContentTypeCharset(outputMessage.getHeaders().getContentType());
-		String s = convertToString(t);
-		FileCopyUtils.copy(s, new OutputStreamWriter(outputMessage.getBody(), charset));
+		Map<Field<?, ?>, ?> entityMap = convertToMap(t);
+		entityMap = Maps.filterValues(entityMap, Predicates.notNull());
+		String content = Joiner.on("\n").withKeyValueSeparator(": ").join(entityMap);
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("content", content);
+		formHttpMessageConverter.write(map, MediaType.MULTIPART_FORM_DATA, outputMessage);
 	}
 
 	@Override
-	protected T readInternal(Class<? extends T> clazz, HttpInputMessage inputMessage) throws IOException,
-			HttpMessageNotReadableException {
+	protected T readInternal(Class<? extends T> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
 		Charset charset = getContentTypeCharset(inputMessage.getHeaders().getContentType());
 		String response = FileCopyUtils.copyToString(new InputStreamReader(inputMessage.getBody(), charset));
-		return convertToEntity(response);
+		Map<String, String> map = convertToMap(response);
+		return convertToEntity(map);
 	}
 
-	protected abstract T convertToEntity(String response);
-	protected abstract String convertToString(T entity);
+	protected abstract T convertToEntity(Map<String, String> map);
+	protected abstract Map<Field<?, ?>, ?> convertToMap(T entity);
 	
 	protected List<Charset> getAcceptedCharsets() {
 		return availableCharsets;
@@ -68,7 +75,7 @@ public abstract class RTConverter<T> extends AbstractHttpMessageConverter<T> {
 		}
 	}
 
-	public Map<String, String> convertToMap(String response) {
+	@VisibleForTesting Map<String, String> convertToMap(String response) {
 		Splitter keySplitter = Splitter.onPattern("(:|\\s|\\d\\.\\d\\.\\d)+").trimResults().omitEmptyStrings().limit(2);
 		Iterable<String> lines = Splitter.onPattern("\\r?\\n(?![ \\t])").trimResults().omitEmptyStrings().split(response);
 		Map<String, String> map = Maps.newHashMap();

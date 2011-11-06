@@ -27,12 +27,19 @@ public abstract class TicketField<T> extends Field<T, Ticket> {
 		@Override public void setValue(Ticket ticket, String value) {
 			ticket.setName(value);
 		}};
-	public static final TicketField<String> OWNER = new TicketField<String>("Owner"){
-		@Override public String getValue(Ticket ticket) {
-			return ticket.getOwner();
+		public static final TicketField<String> OWNER = new TicketField<String>("Owner"){
+			@Override public String getValue(Ticket ticket) {
+				return ticket.getOwner();
+			}
+			@Override public void setValue(Ticket ticket, String value) {
+				ticket.setOwner(value);
+			}};
+	public static final TicketField<Integer> TIME_WORKED = new TicketField<Integer>("TimeWorked"){
+		@Override public Integer getValue(Ticket ticket) {
+			return ticket.getTimeWorked();
 		}
-		@Override public void setValue(Ticket ticket, String value) {
-			ticket.setOwner(value);
+		@Override public void setValue(Ticket ticket, Integer value) {
+			ticket.setTimeWorked(value);
 		}};
 	public static final TicketField<String> CLEARING = new TicketField<String>("CF.{Rozliczajacy}"){
 		@Override public String getValue(Ticket ticket) {

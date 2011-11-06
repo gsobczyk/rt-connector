@@ -3,7 +3,9 @@ package pl.gsobczyk.rtconnector.web;
 public enum RestAction {
 	LOGIN("?user={user}&pass={pass}"),
 	LOGOUT("logout"), 
+	CREATE("ticket/new"),
 	GET("ticket/{ticketId}/show"),
+	EDIT("ticket/{ticketId}/edit"),
 	QUEUE("queue/{queueId}");
 	private final String action;
 

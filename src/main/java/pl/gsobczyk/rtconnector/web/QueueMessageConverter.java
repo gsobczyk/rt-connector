@@ -1,14 +1,18 @@
 package pl.gsobczyk.rtconnector.web;
 
+import static pl.gsobczyk.rtconnector.domain.QueueField.DESCRIPTION;
+import static pl.gsobczyk.rtconnector.domain.QueueField.ID;
+import static pl.gsobczyk.rtconnector.domain.QueueField.NAME;
+
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import pl.gsobczyk.rtconnector.domain.Field;
 import pl.gsobczyk.rtconnector.domain.Queue;
-import pl.gsobczyk.rtconnector.domain.QueueField;
 import pl.gsobczyk.rtconnector.domain.TicketField;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Maps;
 
 @Component
 public class QueueMessageConverter extends RTConverter<Queue> {
@@ -18,23 +22,26 @@ public class QueueMessageConverter extends RTConverter<Queue> {
 		return Queue.class.equals(clazz);
 	}
 
-	@VisibleForTesting
-	protected Queue convertToEntity(String response) {
-		Map<String, String> map = convertToMap(response);
+	@Override
+	protected Queue convertToEntity(Map<String, String> map) {
 		Queue queue = new Queue();
 		String id = map.get(TicketField.ID.getName());
 		if (id==null){
 			return null;
 		}
 		id = id.substring(id.indexOf('/')+1);
-		QueueField.ID.setValue(queue, Long.valueOf(id));
-		QueueField.DESCRIPTION.setValue(queue, map.get(QueueField.DESCRIPTION.getName()));
-		QueueField.NAME.setValue(queue, map.get(QueueField.NAME.getName()));
+		ID.setValue(queue, Long.valueOf(id));
+		DESCRIPTION.setValue(queue, map.get(DESCRIPTION.getName()));
+		NAME.setValue(queue, map.get(NAME.getName()));
 		return queue;
 	}
 	
-	protected String convertToString(Queue ticket){
-		String result=null;
+	@Override
+	protected Map<Field<?, ?>, ?> convertToMap(Queue queue){
+		Map<Field<?, ?>, String> result = Maps.newHashMap();
+		result.put(ID, "queue/"+ID.getValue(queue));
+		result.put(DESCRIPTION, DESCRIPTION.getValue(queue));
+		result.put(NAME, NAME.getValue(queue));
 		return result;
 	}
 

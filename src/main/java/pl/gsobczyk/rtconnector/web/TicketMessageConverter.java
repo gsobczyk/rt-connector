@@ -1,13 +1,24 @@
 package pl.gsobczyk.rtconnector.web;
 
+import static pl.gsobczyk.rtconnector.domain.TicketField.CLEARING;
+import static pl.gsobczyk.rtconnector.domain.TicketField.CLIENT;
+import static pl.gsobczyk.rtconnector.domain.TicketField.ID;
+import static pl.gsobczyk.rtconnector.domain.TicketField.NAME;
+import static pl.gsobczyk.rtconnector.domain.TicketField.OWNER;
+import static pl.gsobczyk.rtconnector.domain.TicketField.PROJECT;
+import static pl.gsobczyk.rtconnector.domain.TicketField.QUEUE;
+import static pl.gsobczyk.rtconnector.domain.TicketField.TIME_WORKED;
+
 import java.util.Map;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.stereotype.Component;
 
+import pl.gsobczyk.rtconnector.domain.Field;
 import pl.gsobczyk.rtconnector.domain.Ticket;
 import pl.gsobczyk.rtconnector.domain.TicketField;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Maps;
 
 @Component
 public class TicketMessageConverter extends RTConverter<Ticket> {
@@ -17,28 +28,46 @@ public class TicketMessageConverter extends RTConverter<Ticket> {
 		return Ticket.class.equals(clazz);
 	}
 
-	@VisibleForTesting
-	protected Ticket convertToEntity(String response) {
-		Map<String, String> map = convertToMap(response);
+	@Override
+	protected Ticket convertToEntity(Map<String, String> map) {
 		Ticket ticket=new Ticket();
 		String id = map.get(TicketField.ID.getName());
 		if (id==null){
 			return null;
 		}
 		id = id.substring(id.indexOf('/')+1);
-		TicketField.ID.setValue(ticket, Long.valueOf(id));
-		TicketField.QUEUE.setValue(ticket, map.get(TicketField.QUEUE.getName()));
-		TicketField.NAME.setValue(ticket, map.get(TicketField.NAME.getName()));
-		TicketField.OWNER.setValue(ticket, map.get(TicketField.OWNER.getName()));
-		TicketField.CLEARING.setValue(ticket, map.get(TicketField.CLEARING.getName()));
-		TicketField.CLIENT.setValue(ticket, map.get(TicketField.CLIENT.getName()));
-		TicketField.PROJECT.setValue(ticket, map.get(TicketField.PROJECT.getName()));
+		ID.setValue(ticket, Long.valueOf(id));
+		QUEUE.setValue(ticket, map.get(QUEUE.getName()));
+		NAME.setValue(ticket, map.get(NAME.getName()));
+		OWNER.setValue(ticket, map.get(OWNER.getName()));
+		CLEARING.setValue(ticket, map.get(CLEARING.getName()));
+		CLIENT.setValue(ticket, map.get(CLIENT.getName()));
+		PROJECT.setValue(ticket, map.get(PROJECT.getName()));
+		String timeWorked = map.get(TIME_WORKED.getName());
+		timeWorked = timeWorked.split("\\s")[0];
+		TIME_WORKED.setValue(ticket, NumberUtils.createInteger(timeWorked));
 		return ticket;
 	}
 	
-	protected String convertToString(Ticket ticket){
-		String result=null;
-		return result;
+	@Override
+	protected Map<Field<?,?>, ?> convertToMap(Ticket ticket){
+		Map<Field<?,?>, String> map = Maps.newLinkedHashMap();
+		if (ticket.getId()==null){
+			map.put(ID, "ticket/new");
+		} else {
+			map.put(ID, "ticket/"+ID.getValue(ticket));
+		}
+		map.put(NAME, NAME.getValue(ticket));
+		map.put(OWNER, OWNER.getValue(ticket));
+		map.put(CLEARING, CLEARING.getValue(ticket));
+		map.put(CLIENT, CLIENT.getValue(ticket));
+		map.put(PROJECT, PROJECT.getValue(ticket));
+		Integer timeWorked = TIME_WORKED.getValue(ticket);
+		if (timeWorked!=null){
+			map.put(TIME_WORKED, Integer.toString(timeWorked));
+		}
+		map.put(QUEUE, QUEUE.getValue(ticket));//must be last!
+		return map;
 	}
 
 }
