@@ -27,16 +27,18 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import pl.gsobczyk.rtconnector.service.SimpleRTDao;
+import pl.gsobczyk.rtconnector.service.SwingTicketChooser;
+import pl.gsobczyk.rtconnector.service.TicketChooser;
+import pl.gsobczyk.rtconnector.web.AutocompleteChooser;
 import pl.gsobczyk.rtconnector.web.RTConverter;
+import pl.gsobczyk.rtconnector.web.SwingAutocompleteChooser;
 import pl.gsobczyk.tools.RelaxedX509TrustManager;
 
 @Configuration
 @ComponentScan({"pl.gsobczyk.rtconnector.service","pl.gsobczyk.rtconnector.web"})
 @PropertySource(value="classpath:/app.properties", name="appProps")
 public class AppConfig {
-//	@Value("#{appProps['rt.url']}") String url;
 	@Autowired private Environment env;
-//	@Autowired private Collection<RTConverter<?>> converters;
 	
 	@Bean public HttpClient httpClient() throws KeyManagementException, NoSuchAlgorithmException{
 		SSLContext ctx = SSLContext.getInstance("TLS");
@@ -50,6 +52,14 @@ public class AppConfig {
         CredentialsProvider credendialProvider = client.getCredentialsProvider();
         credendialProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(env.getProperty(SimpleRTDao.P_USER), env.getProperty(SimpleRTDao.P_PASSWORD)));
         return client;
+	}
+	
+	@Bean public TicketChooser ticketChooser(){
+		return new SwingTicketChooser();
+	}
+	
+	@Bean public AutocompleteChooser autocompleteChooser(){
+		return new SwingAutocompleteChooser();
 	}
 	
 	@Bean public RestTemplate restTemplate(HttpClient httpClient, Collection<RTConverter<?>> converters){

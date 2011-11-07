@@ -96,6 +96,7 @@ public class SimpleRTDao implements RTDao {
 		m.find();
 		String id = m.group(1);
 		ticket.setId(Long.parseLong(id));
+		takeTicket(ticket);
 		return ticket;
 	}
 

@@ -1,6 +1,11 @@
 package pl.gsobczyk.rtconnector.domain;
 
+import java.util.List;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.springframework.util.StringUtils;
+
+import com.google.common.collect.Lists;
 
 public class Ticket {
 	public static final String REGEX_DIRECT = "^.*RT#(\\d+):[^\\>]+$";
@@ -65,11 +70,6 @@ public class Ticket {
 	public void setTimeWorked(Integer timeWorked) {
 		this.timeWorked = timeWorked;
 	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
-	}
 	public String getText() {
 		return text;
 	}
@@ -81,5 +81,32 @@ public class Ticket {
 	}
 	public void setAction(TicketAction action) {
 		this.action = action;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
+	}
+	@Override
+	public String toString() {
+		List<String> list = Lists.newArrayList();
+		if (StringUtils.hasText(queue)){
+			list.add(queue);
+		}
+		if (StringUtils.hasText(project)){
+			list.add(project);
+		}
+		if (StringUtils.hasText(clearing)){
+			list.add(clearing);
+		}
+		String name="";
+		if (id!=null){
+			name = "RT#"+id+":";
+		}
+		if (StringUtils.hasText(this.name)){
+			name+=" "+this.name;
+			list.add(name);
+		}
+		return StringUtils.collectionToDelimitedString(list, " > ");
 	}
 }

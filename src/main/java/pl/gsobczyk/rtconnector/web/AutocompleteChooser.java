@@ -4,9 +4,9 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 public interface AutocompleteChooser {
-	String chooseBest(Iterable<String> values);
+	String chooseBest(Iterable<String> values, String autocompleteQuery);
 	public static class FirstAutocompleteChooser implements AutocompleteChooser {
-		@Override public String chooseBest(Iterable<String> values) {
+		@Override public String chooseBest(Iterable<String> values, String autocompleteQuery) {
 			Iterable<String> filtered = Iterables.filter(values, new Predicate<String>(){
 				@Override public boolean apply(String input) {
 					return !input.startsWith("(");

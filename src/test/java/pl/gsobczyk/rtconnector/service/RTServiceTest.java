@@ -41,6 +41,7 @@ public class RTServiceTest {
 			}
 		};
 		service.setAutocompleteService(autocompleteService);
+		service.setAutocompleteChooser(autocompleteChooser);
 	}
 
 	@Test
@@ -104,7 +105,7 @@ public class RTServiceTest {
 	public void shouldGetQueue() throws Exception {
 		// given
 		// when
-		String queue = service.getQueue(FULL_QUERY, autocompleteChooser);
+		String queue = service.getQueue(FULL_QUERY);
 		// then
 		Assert.assertEquals("queue", queue);
 	}
@@ -113,7 +114,7 @@ public class RTServiceTest {
 	public void shouldGetClient() throws Exception {
 		// given
 		// when
-		String client = service.getClient(FULL_QUERY, autocompleteChooser);
+		String client = service.getClient(FULL_QUERY);
 		// then
 		Assert.assertEquals("client", client);
 	}
@@ -122,7 +123,7 @@ public class RTServiceTest {
 	public void shouldGetProject() throws Exception {
 		// given
 		// when
-		String project = service.getProject(FULL_QUERY, autocompleteChooser);
+		String project = service.getProject(FULL_QUERY);
 		// then
 		Assert.assertEquals("client/project", project);
 	}
@@ -131,7 +132,7 @@ public class RTServiceTest {
 	public void shouldGetClearing() throws Exception {
 		// given
 		// when
-		String clearing = service.getClearing(FULL_QUERY, autocompleteChooser);
+		String clearing = service.getClearing(FULL_QUERY);
 		// then
 		Assert.assertEquals("clearing", clearing);
 	}

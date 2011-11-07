@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import pl.gsobczyk.rtconnector.domain.Queue;
@@ -17,19 +18,23 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 
+@Service
 public class RTService {
 	public static final String DIRECT_TICKET = "^.*RT#(\\d+):[^>]+$";
 	public static final String PARENT_TICKET = "^.*RT#(\\d+):[^>]+>[^>]+$";
 	public static final String FULL_TICKET = "^(?:.*>)?([^>]+)>([^>/]+)/([^>]+)>([^>]+)>([^>]+>)?[^>]+$";
+	public static final String ONLY_QUEUE_TICKET = "^([^>]+)>(?:[^>]+>)?[^>]+$";
 	@Autowired private RTDao rtDao;
 	@Autowired private RTAutocompleteService autocompleteService;
+	@Autowired private TicketChooser ticketChooser;
+	@Autowired private AutocompleteChooser autocompleteChooser;
 	
-	public void addTime(String ticketQuery, int minutes, TicketChooser ticketChooser, AutocompleteChooser autocompleteChooser) throws QuerySyntaxException{
-		Ticket ticket = findOrCreateTicket(ticketQuery, ticketChooser, autocompleteChooser);
+	public void addTime(String ticketQuery, int minutes) throws QuerySyntaxException{
+		Ticket ticket = findOrCreateTicket(ticketQuery);
 		rtDao.addTime(ticket, minutes);
 	}
 	
-	Ticket findOrCreateTicket(String ticketQuery, TicketChooser ticketChooser, AutocompleteChooser autocompleteChooser) throws QuerySyntaxException{
+	Ticket findOrCreateTicket(String ticketQuery) throws QuerySyntaxException{
 		if (ticketQuery.matches(DIRECT_TICKET)){
 			Long id = getTicketId(ticketQuery);
 			return rtDao.getTicket(id);
@@ -37,66 +42,110 @@ public class RTService {
 			Long parentId = getParentId(ticketQuery);
 			String name = getName(ticketQuery);
 			Ticket parent = rtDao.getTicket(parentId);
-			List<Ticket> tickets = rtDao.findTickets(parent, name, false);
-			if (!CollectionUtils.isEmpty(tickets) && tickets.size()==1){
-				return tickets.iterator().next();
-			} else {
-				return ticketChooser.chooseBestTicket(tickets);
+			List<Ticket> tickets = rtDao.findTickets(parent, name, true);
+			if (CollectionUtils.isEmpty(tickets)){
+				tickets = rtDao.findTickets(parent, name, false);
 			}
+			if (!CollectionUtils.isEmpty(tickets)){
+				if (tickets.size()==1){
+					return tickets.iterator().next();
+				} else {
+					return ticketChooser.chooseBestTicket(tickets, ticketQuery);
+				}
+			}
+			return rtDao.createTicket(parent.getQueue(), parent.getClient(), parent.getProject(), parent.getClearing(), name);
 		} else if (ticketQuery.matches(FULL_TICKET)){
-			String queue = getQueue(ticketQuery, autocompleteChooser);
-			String client = getClient(ticketQuery, autocompleteChooser);
-			String project = getProject(ticketQuery, autocompleteChooser);
+			String queue = getQueue(ticketQuery);
+			String client = getClient(ticketQuery);
+			String project = getProject(ticketQuery);
 			String name = getName(ticketQuery);
-			String clearing = getClearing(ticketQuery, autocompleteChooser);
-			List<Ticket> tickets = rtDao.findTickets(queue, client, project, clearing, name, false);
-			if (!CollectionUtils.isEmpty(tickets) && tickets.size()==1){
-				return tickets.iterator().next();
-			} else {
-				return ticketChooser.chooseBestTicket(tickets);
+			String clearing = getClearing(ticketQuery);
+			List<Ticket> tickets = rtDao.findTickets(queue, client, project, clearing, name, true);
+			if (CollectionUtils.isEmpty(tickets)){
+				tickets = rtDao.findTickets(queue, client, project, clearing, name, false);
 			}
+			if (!CollectionUtils.isEmpty(tickets)){
+				if (tickets.size()==1){
+					return tickets.iterator().next();
+				} else {
+					return ticketChooser.chooseBestTicket(tickets, ticketQuery);
+				}
+			}
+			return rtDao.createTicket(queue, client, project, clearing, name);
+		} else if (ticketQuery.matches(ONLY_QUEUE_TICKET)){
+			String name = getName(ticketQuery);
+			String queue = getQueue(ticketQuery);
+			List<Ticket> tickets = rtDao.findTickets(queue, null, null, null, name, true);
+			if (CollectionUtils.isEmpty(tickets)){
+				tickets = rtDao.findTickets(queue, null, null, null, name, false);
+			}
+			if (!CollectionUtils.isEmpty(tickets)){
+				if (tickets.size()==1){
+					return tickets.iterator().next();
+				} else {
+					return ticketChooser.chooseBestTicket(tickets, ticketQuery);
+				}
+			}
+			return rtDao.createTicket(queue, null, null, null, name);
 		} else {
+			String name = getName(ticketQuery);
+			List<Ticket> tickets = rtDao.findTickets(null, null, null, null, name, true);
+			if (CollectionUtils.isEmpty(tickets)){
+				tickets = rtDao.findTickets(null, null, null, null, name, false);
+			}
+			if (!CollectionUtils.isEmpty(tickets)){
+				if (tickets.size()==1){
+					return tickets.iterator().next();
+				} else {
+					return ticketChooser.chooseBestTicket(tickets, ticketQuery);
+				}
+			}
 			throw new QuerySyntaxException(ticketQuery);
 		}
 	}
-	String getClearing(String ticketQuery, AutocompleteChooser autocompleteChooser) throws QuerySyntaxException{
+	String getClearing(String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(FULL_TICKET).matcher(ticketQuery);
 		if (!m.find()){
 			throw new QuerySyntaxException("query isn't a directQuery");
 		} else {
-			Iterable<String> names = autocompleteService.findClients(m.group(4).trim());
-			return autocompleteChooser.chooseBest(names);
+			String clearing = m.group(4).trim();
+			Iterable<String> names = autocompleteService.findClearings(clearing);
+			return autocompleteChooser.chooseBest(names, clearing);
 		}
 	}
-	String getProject(String ticketQuery, AutocompleteChooser autocompleteChooser) throws QuerySyntaxException{
+	String getProject(String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(FULL_TICKET).matcher(ticketQuery);
 		if (!m.find()){
 			throw new QuerySyntaxException("query isn't a directQuery");
 		} else {
-			Iterable<String> names = autocompleteService.findProjects(m.group(2).trim(), m.group(3).trim());
-			return autocompleteChooser.chooseBest(names);
+			String client = m.group(2).trim();
+			String project = m.group(3).trim();
+			Iterable<String> names = autocompleteService.findProjects(client, project);
+			return autocompleteChooser.chooseBest(names, client+"/"+project);
 		}
 	}
-	String getClient(String ticketQuery, AutocompleteChooser autocompleteChooser) throws QuerySyntaxException{
+	String getClient(String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(FULL_TICKET).matcher(ticketQuery);
 		if (!m.find()){
 			throw new QuerySyntaxException("query isn't a directQuery");
 		} else {
-			Iterable<String> names = autocompleteService.findClients(m.group(2).trim());
-			return autocompleteChooser.chooseBest(names);
+			String client = m.group(2).trim();
+			Iterable<String> names = autocompleteService.findClients(client);
+			return autocompleteChooser.chooseBest(names, client);
 		}
 	}
-	String getQueue(String ticketQuery, AutocompleteChooser autocompleteChooser) throws QuerySyntaxException{
+	String getQueue(String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(FULL_TICKET).matcher(ticketQuery);
 		if (!m.find()){
 			throw new QuerySyntaxException("query isn't a directQuery");
 		} else {
-			Collection<Queue> queues = autocompleteService.findQueues(m.group(1).trim());
+			String queue = m.group(1).trim();
+			Collection<Queue> queues = autocompleteService.findQueues(queue);
 			Iterable<String> names = Iterables.transform(queues, new Function<Queue, String>(){
 				@Override public String apply(Queue input) {
 					return input.getName();
 				}});
-			return autocompleteChooser.chooseBest(names);
+			return autocompleteChooser.chooseBest(names, queue);
 		}
 	}
 	String getName(String ticketQuery){
@@ -121,5 +170,11 @@ public class RTService {
 
 	@VisibleForTesting void setAutocompleteService(RTAutocompleteService autocompleteService) {
 		this.autocompleteService = autocompleteService;
+	}
+	@VisibleForTesting void setTicketChooser(TicketChooser ticketChooser) {
+		this.ticketChooser = ticketChooser;
+	}
+	@VisibleForTesting void setAutocompleteChooser(AutocompleteChooser autocompleteChooser) {
+		this.autocompleteChooser = autocompleteChooser;
 	}
 }
