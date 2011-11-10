@@ -54,7 +54,7 @@ public class TicketMessageConverter extends RTConverter<Ticket> {
 	}
 	
 	@Override
-	protected Map<Field<?,?>, ?> convertToMap(Ticket ticket){
+	protected Map<Field<?,?>, String> convertToMap(Ticket ticket){
 		Map<Field<?,?>, String> map = Maps.newLinkedHashMap();
 		if (ticket.getId()==null){
 			map.put(ID, "ticket/new");

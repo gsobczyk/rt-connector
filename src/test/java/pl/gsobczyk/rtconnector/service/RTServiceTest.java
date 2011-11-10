@@ -4,9 +4,13 @@ import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import pl.gsobczyk.rtconnector.configuration.AppConfig;
 import pl.gsobczyk.rtconnector.domain.Queue;
+import pl.gsobczyk.rtconnector.domain.Ticket;
 import pl.gsobczyk.rtconnector.web.AutocompleteChooser;
 import pl.gsobczyk.rtconnector.web.RTAutocompleteService;
 
@@ -14,8 +18,8 @@ import com.google.common.collect.Lists;
 
 public class RTServiceTest {
 	private static final String FULL_QUERY = "queue > client/project > clearing > parent > ticket name";
-	private static final String PARENT_QUERY = "test > test > test > RT#9997: test name > test name";
-	private static final String DIRECT_QUERY = "test > test > test > RT#9999: test name";
+	private static final String PARENT_QUERY = "test > test > test > #9997: test name > test name";
+	private static final String DIRECT_QUERY = "test > test > test > #9999: test name";
 	private RTService service;
 	private AutocompleteChooser autocompleteChooser;
 	private RTAutocompleteService autocompleteService;
@@ -135,6 +139,23 @@ public class RTServiceTest {
 		String clearing = service.getClearing(FULL_QUERY);
 		// then
 		Assert.assertEquals("clearing", clearing);
+	}
+	
+	@Test
+	@Ignore
+	//ciągłe pytanie o jedną opcję
+	//złe kodowanie rozliczającego
+	//zły requestor
+	//zle ustawia ownera
+	public void shouldAddTime() throws Exception {
+		// given
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+		RTService rtService = context.getBean(RTService.class);
+		String query = "smietnik > mig/2008 > radosław > Z#54 Testowe zadanie REST";
+		// when
+		Ticket t = rtService.addTime(query, 82);
+		// then
+		Assert.assertNotNull(t);
 	}
 	
 }

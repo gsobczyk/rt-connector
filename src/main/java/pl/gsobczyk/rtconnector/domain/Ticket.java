@@ -8,8 +8,8 @@ import org.springframework.util.StringUtils;
 import com.google.common.collect.Lists;
 
 public class Ticket {
-	public static final String REGEX_DIRECT = "^.*RT#(\\d+):[^\\>]+$";
-	public static final String REGEX_PARENT = "^.*RT#(\\d+):[^\\>]+\\>([^>]+)";
+	public static final String REGEX_DIRECT = "^.*#(\\d+):[^\\>]+$";
+	public static final String REGEX_PARENT = "^.*#(\\d+):[^\\>]+\\>([^>]+)";
 	public static final String REGEX_FULL = "^([^\\\\>]+)>([^\\\\>]+)\\/([^\\\\>]+)>([^\\>]+)>([^\\>]+)$";
 	private Long id;
 	private String name;

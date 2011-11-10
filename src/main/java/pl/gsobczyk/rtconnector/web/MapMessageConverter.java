@@ -15,7 +15,7 @@ public class MapMessageConverter extends RTConverter<Map<String, String>>{
 	}
 
 	@Override
-	protected Map<Field<?, ?>, ?> convertToMap(Map<String, String> entity) {
+	protected Map<Field<?, ?>, String> convertToMap(Map<String, String> entity) {
 		return null;
 	}
 

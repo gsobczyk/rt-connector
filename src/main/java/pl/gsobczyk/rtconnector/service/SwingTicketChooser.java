@@ -17,6 +17,9 @@ public class SwingTicketChooser implements TicketChooser {
 
 	@Override
 	public Ticket chooseBestTicket(List<Ticket> tickets, String ticketQuery) {
+		if (tickets.size()==1){
+			return tickets.iterator().next();
+		}
 		Object[] possibleValues = tickets.toArray();
 		Ticket result = null;
 		int tries = 0;

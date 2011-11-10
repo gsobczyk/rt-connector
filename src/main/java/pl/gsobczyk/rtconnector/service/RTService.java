@@ -20,8 +20,8 @@ import com.google.common.collect.Iterables;
 
 @Service
 public class RTService {
-	public static final String DIRECT_TICKET = "^.*RT#(\\d+):[^>]+$";
-	public static final String PARENT_TICKET = "^.*RT#(\\d+):[^>]+>[^>]+$";
+	public static final String DIRECT_TICKET = "^.*#(\\d+):[^>]+$";
+	public static final String PARENT_TICKET = "^.*#(\\d+):[^>]+>[^>]+$";
 	public static final String FULL_TICKET = "^(?:.*>)?([^>]+)>([^>/]+)/([^>]+)>([^>]+)>([^>]+>)?[^>]+$";
 	public static final String ONLY_QUEUE_TICKET = "^([^>]+)>(?:[^>]+>)?[^>]+$";
 	@Autowired private RTDao rtDao;
@@ -29,9 +29,10 @@ public class RTService {
 	@Autowired private TicketChooser ticketChooser;
 	@Autowired private AutocompleteChooser autocompleteChooser;
 	
-	public void addTime(String ticketQuery, int minutes) throws QuerySyntaxException{
+	public Ticket addTime(String ticketQuery, int minutes) throws QuerySyntaxException{
 		Ticket ticket = findOrCreateTicket(ticketQuery);
 		rtDao.addTime(ticket, minutes);
+		return ticket;
 	}
 	
 	Ticket findOrCreateTicket(String ticketQuery) throws QuerySyntaxException{

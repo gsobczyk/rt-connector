@@ -10,7 +10,7 @@ public class TicketTest {
 	@Test
 	public void shouldParseDirectTicket() throws Exception {
 		// given
-		String test="DRIW-Adacko > MIG/MIG > RT#70907: Błedy w xxxxxxx";
+		String test="DRIW-Adacko > MIG/MIG > #70907: Błedy w xxxxxxx";
 		// when
 		boolean result = test.matches(Ticket.REGEX_DIRECT);
 		// then
@@ -20,7 +20,7 @@ public class TicketTest {
 	@Test
 	public void shouldNotParseDirectTicket() throws Exception {
 		// given
-		String test="DRIW-Adacko > MIG/MIG > RT#70907: Błedy w xxxxxxx > xxxxx";
+		String test="DRIW-Adacko > MIG/MIG > #70907: Błedy w xxxxxxx > xxxxx";
 		// when
 		boolean result = test.matches(Ticket.REGEX_DIRECT);
 		// then
@@ -30,7 +30,7 @@ public class TicketTest {
 	@Test
 	public void shouldNotParseParentTicket() throws Exception {
 		// given
-		String test="DRIW-Adacko > MIG/MIG > RT#70907: Błedy w xxxxxxx";
+		String test="DRIW-Adacko > MIG/MIG > #70907: Błedy w xxxxxxx";
 		// when
 		boolean result = test.matches(Ticket.REGEX_PARENT);
 		// then
@@ -40,7 +40,7 @@ public class TicketTest {
 	@Test
 	public void shouldParseParentTicket() throws Exception {
 		// given
-		String test="DRIW-Adacko > MIG/MIG > RT#70907: Błedy w xxxxxxx > xxxxx";
+		String test="DRIW-Adacko > MIG/MIG > #70907: Błedy w xxxxxxx > xxxxx";
 		// when
 		boolean result = test.matches(Ticket.REGEX_PARENT);
 		// then

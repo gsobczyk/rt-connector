@@ -25,6 +25,7 @@ import org.springframework.util.MultiValueMap;
 import pl.gsobczyk.rtconnector.domain.Field;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
@@ -40,16 +41,21 @@ public abstract class RTConverter<T> extends AbstractHttpMessageConverter<T> {
 	public void postConstruct(){
 		setSupportedMediaTypes(Lists.newArrayList(new MediaType("text", "plain", DEFAULT_CHARSET), MediaType.MULTIPART_FORM_DATA, MediaType.ALL));
 		this.availableCharsets = new ArrayList<Charset>(Charset.availableCharsets().values());
+		formHttpMessageConverter.setCharset(DEFAULT_CHARSET);
 	}
 	
 	@Override
 	protected void writeInternal(T t, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-		Map<Field<?, ?>, ?> entityMap = convertToMap(t);
+		Map<Field<?, ?>, String> entityMap = convertToMap(t);
 		entityMap = Maps.filterValues(entityMap, Predicates.notNull());
+		entityMap = Maps.transformValues(entityMap, new Function<String, String>(){
+			@Override public String apply(String input) {
+				return input.replaceAll("\\n", "\n ");
+			}});
 		String content = Joiner.on("\n").withKeyValueSeparator(": ").join(entityMap);
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("content", content);
-		formHttpMessageConverter.write(map, MediaType.MULTIPART_FORM_DATA, outputMessage);
+		formHttpMessageConverter.write(map, MediaType.APPLICATION_FORM_URLENCODED, outputMessage);
 	}
 
 	@Override
@@ -61,7 +67,7 @@ public abstract class RTConverter<T> extends AbstractHttpMessageConverter<T> {
 	}
 
 	protected abstract T convertToEntity(Map<String, String> map);
-	protected abstract Map<Field<?, ?>, ?> convertToMap(T entity);
+	protected abstract Map<Field<?, ?>, String> convertToMap(T entity);
 	
 	protected List<Charset> getAcceptedCharsets() {
 		return availableCharsets;

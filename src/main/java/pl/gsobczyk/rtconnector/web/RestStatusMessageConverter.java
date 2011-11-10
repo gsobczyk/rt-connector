@@ -22,7 +22,7 @@ public class RestStatusMessageConverter extends RTConverter<RestStatus> {
 	}
 
 	@Override
-	protected Map<Field<?, ?>, ?> convertToMap(RestStatus entity) {
+	protected Map<Field<?, ?>, String> convertToMap(RestStatus entity) {
 		return null;
 	}
 

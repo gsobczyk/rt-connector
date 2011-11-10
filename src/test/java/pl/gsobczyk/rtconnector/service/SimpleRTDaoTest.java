@@ -140,4 +140,18 @@ public class SimpleRTDaoTest {
 		// then
 		Assert.assertFalse(tickets.isEmpty());
 	}
+	
+	@Test
+	public void shouldTakeTicket() throws Exception {
+		// given
+		Ticket ticket = new Ticket();
+		ticket.setId(70670L);
+
+		// when
+		RestStatus result = rtDao.takeTicket(ticket);
+
+		// then
+		result.getStatus().startsWith("200");
+	}
+
 }

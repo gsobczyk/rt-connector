@@ -37,7 +37,7 @@ public class QueueMessageConverter extends RTConverter<Queue> {
 	}
 	
 	@Override
-	protected Map<Field<?, ?>, ?> convertToMap(Queue queue){
+	protected Map<Field<?, ?>, String> convertToMap(Queue queue){
 		Map<Field<?, ?>, String> result = Maps.newHashMap();
 		result.put(ID, "queue/"+ID.getValue(queue));
 		result.put(DESCRIPTION, DESCRIPTION.getValue(queue));

@@ -90,6 +90,7 @@ public class SimpleRTDao implements RTDao {
 		ticket.setQueue(queue);
 		ticket.setClient(client);
 		ticket.setProject(project);
+		ticket.setClearing(clearing);
 		ticket.setName(name);
 		RestStatus status = restTemplate.postForObject(restUrl+CREATE, ticket, RestStatus.class);
 		Matcher m = Pattern.compile("Ticket (\\d+) created\\.").matcher(status.getMessage());
