@@ -69,7 +69,6 @@ public abstract class TicketField<T> extends Field<T, Ticket> {
 		@Override public void setValue(Ticket ticket, String value) {
 			ticket.setProject(value);
 		}};
-
 	public static final TicketField<TicketAction> ACTION = new TicketField<TicketAction>("Action"){
 		@Override public TicketAction getValue(Ticket ticket) {
 			return ticket.getAction();
@@ -77,5 +76,11 @@ public abstract class TicketField<T> extends Field<T, Ticket> {
 		@Override public void setValue(Ticket ticket, TicketAction value) {
 			ticket.setAction(value);
 		}};
-
+	public static final TicketField<String> REQUESTORS = new TicketField<String>("Requestor"){
+		@Override public String getValue(Ticket ticket) {
+			return ticket.getRequestors();
+		}
+		@Override public void setValue(Ticket ticket, String value) {
+			ticket.setRequestors(value);
+		}};
 }

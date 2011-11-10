@@ -92,6 +92,7 @@ public class SimpleRTDao implements RTDao {
 		ticket.setProject(project);
 		ticket.setClearing(clearing);
 		ticket.setName(name);
+		ticket.setRequestors(user);
 		RestStatus status = restTemplate.postForObject(restUrl+CREATE, ticket, RestStatus.class);
 		Matcher m = Pattern.compile("Ticket (\\d+) created\\.").matcher(status.getMessage());
 		m.find();
@@ -129,6 +130,7 @@ public class SimpleRTDao implements RTDao {
 			queryString+=" AND ";
 		}
 		queryString += "( Status = 'new' OR Status = 'open' )";
+		@SuppressWarnings("unchecked")
 		Map<String, String> map = restTemplate.getForObject(restUrl+QUERY, Map.class, queryString);
 		List<Ticket> result = Lists.newArrayList();
 		for (String key : map.keySet()) {

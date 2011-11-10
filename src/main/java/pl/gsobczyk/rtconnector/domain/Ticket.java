@@ -21,6 +21,7 @@ public class Ticket {
 	private Integer timeWorked;
 	private String text;
 	private TicketAction action;
+	private String requestors;
 	
 	public Long getId() {
 		return id;
@@ -81,6 +82,12 @@ public class Ticket {
 	}
 	public void setAction(TicketAction action) {
 		this.action = action;
+	}
+	public String getRequestors() {
+		return requestors;
+	}
+	public void setRequestors(String requestors) {
+		this.requestors = requestors;
 	}
 	
 	@Override

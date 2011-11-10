@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -142,16 +141,11 @@ public class RTServiceTest {
 	}
 	
 	@Test
-	@Ignore
-	//ciągłe pytanie o jedną opcję
-	//złe kodowanie rozliczającego
-	//zły requestor
-	//zle ustawia ownera
 	public void shouldAddTime() throws Exception {
 		// given
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 		RTService rtService = context.getBean(RTService.class);
-		String query = "smietnik > mig/2008 > radosław > Z#54 Testowe zadanie REST";
+		String query = "smietnik > contium/organizacyjne > radosław > Z#100 Testowe zadanie REST";
 		// when
 		Ticket t = rtService.addTime(query, 82);
 		// then

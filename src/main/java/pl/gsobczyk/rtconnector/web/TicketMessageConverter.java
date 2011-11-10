@@ -8,6 +8,7 @@ import static pl.gsobczyk.rtconnector.domain.TicketField.NAME;
 import static pl.gsobczyk.rtconnector.domain.TicketField.OWNER;
 import static pl.gsobczyk.rtconnector.domain.TicketField.PROJECT;
 import static pl.gsobczyk.rtconnector.domain.TicketField.QUEUE;
+import static pl.gsobczyk.rtconnector.domain.TicketField.REQUESTORS;
 import static pl.gsobczyk.rtconnector.domain.TicketField.TEXT;
 import static pl.gsobczyk.rtconnector.domain.TicketField.TIME_WORKED;
 
@@ -46,6 +47,7 @@ public class TicketMessageConverter extends RTConverter<Ticket> {
 		CLEARING.setValue(ticket, map.get(CLEARING.getName()));
 		CLIENT.setValue(ticket, map.get(CLIENT.getName()));
 		PROJECT.setValue(ticket, map.get(PROJECT.getName()));
+		REQUESTORS.setValue(ticket, map.get(REQUESTORS.getName()));
 		TEXT.setValue(ticket, map.get(TEXT.getName()));
 		String timeWorked = map.get(TIME_WORKED.getName());
 		timeWorked = timeWorked.split("\\s")[0];
@@ -66,6 +68,7 @@ public class TicketMessageConverter extends RTConverter<Ticket> {
 		map.put(CLEARING, CLEARING.getValue(ticket));
 		map.put(CLIENT, CLIENT.getValue(ticket));
 		map.put(PROJECT, PROJECT.getValue(ticket));
+		map.put(REQUESTORS, REQUESTORS.getValue(ticket));
 		map.put(TEXT, TEXT.getValue(ticket));
 		Integer timeWorked = TIME_WORKED.getValue(ticket);
 		if (timeWorked!=null){
