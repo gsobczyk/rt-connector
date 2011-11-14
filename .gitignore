@@ -2,4 +2,5 @@
 /.project
 /.settings
 /*.jpage
+/Timesheet*
 /src/main/resources/app.properties
