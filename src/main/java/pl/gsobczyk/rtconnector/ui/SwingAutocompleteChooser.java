@@ -1,6 +1,8 @@
-package pl.gsobczyk.rtconnector.web;
+package pl.gsobczyk.rtconnector.ui;
 
 import javax.swing.JOptionPane;
+
+import pl.gsobczyk.rtconnector.web.AutocompleteChooser;
 
 import com.google.common.collect.Iterables;
 

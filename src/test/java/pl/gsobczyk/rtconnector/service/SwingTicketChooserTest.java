@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.springframework.util.Assert;
 
 import pl.gsobczyk.rtconnector.domain.Ticket;
+import pl.gsobczyk.rtconnector.ui.SwingTicketChooser;
 
 import com.google.common.collect.Lists;
 
