@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
-import pl.gsobczyk.rtconnector.configuration.AppConfig;
+import pl.gsobczyk.rtconnector.configuration.AppConfigTest;
 import pl.gsobczyk.rtconnector.domain.Queue;
 import pl.gsobczyk.rtconnector.domain.RestStatus;
 import pl.gsobczyk.rtconnector.domain.Ticket;
@@ -30,7 +30,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={AppConfig.class})
+@ContextConfiguration(classes={AppConfigTest.class})
 public class SimpleRTDaoTest {
 	@Autowired private RestTemplate restTemplate;
 	@Autowired private Environment env;

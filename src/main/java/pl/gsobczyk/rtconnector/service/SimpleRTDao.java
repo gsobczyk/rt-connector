@@ -34,6 +34,7 @@ import pl.gsobczyk.rtconnector.domain.RestStatus;
 import pl.gsobczyk.rtconnector.domain.Ticket;
 import pl.gsobczyk.rtconnector.domain.TicketAction;
 import pl.gsobczyk.rtconnector.domain.TicketField;
+import pl.gsobczyk.rtconnector.ui.Messages;
 import pl.gsobczyk.rtconnector.web.RestAction;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -43,13 +44,13 @@ import com.google.common.collect.Maps;
 
 @Repository
 public class SimpleRTDao implements RTDao {
-	public static final String QUEUE_REGEX = "<select name=\"Queue\".*?>([\\r\\n\\w\\W]*?)</select";
-	public static final Splitter HTML_OPTION_SPLITTER = Splitter.onPattern("(</option\\s*>)|(<option\\s+?value=\")|\\1\\s*\\2").trimResults().omitEmptyStrings();
-	public static final Splitter HTML_KEY_VALUE_SPLITTER = Splitter.onPattern("\"[^>]*>").trimResults().omitEmptyStrings();
-	public static final String D_REST_CONTEXT = "/REST/1.0/";
-	public static final String P_RT_URL = "rt.url";
-	public static final String P_USER = "rt.user";
-	public static final String P_PASSWORD = "rt.password";
+	public static final String QUEUE_REGEX = "<select name=\"Queue\".*?>([\\r\\n\\w\\W]*?)</select"; //$NON-NLS-1$
+	public static final Splitter HTML_OPTION_SPLITTER = Splitter.onPattern("(</option\\s*>)|(<option\\s+?value=\")|\\1\\s*\\2").trimResults().omitEmptyStrings(); //$NON-NLS-1$
+	public static final Splitter HTML_KEY_VALUE_SPLITTER = Splitter.onPattern("\"[^>]*>").trimResults().omitEmptyStrings(); //$NON-NLS-1$
+	public static final String D_REST_CONTEXT = "/REST/1.0/"; //$NON-NLS-1$
+	public static final String P_RT_URL = "rt.url"; //$NON-NLS-1$
+	public static final String P_USER = "rt.user"; //$NON-NLS-1$
+	public static final String P_PASSWORD = "rt.password"; //$NON-NLS-1$
 	@Autowired private RestTemplate restTemplate;
 	@Autowired private Environment env;
 	private String user;
@@ -94,7 +95,7 @@ public class SimpleRTDao implements RTDao {
 		ticket.setName(name);
 		ticket.setRequestors(user);
 		RestStatus status = restTemplate.postForObject(restUrl+CREATE, ticket, RestStatus.class);
-		Matcher m = Pattern.compile("Ticket (\\d+) created\\.").matcher(status.getMessage());
+		Matcher m = Pattern.compile("Ticket (\\d+) created\\.").matcher(status.getMessage()); //$NON-NLS-1$
 		m.find();
 		String id = m.group(1);
 		ticket.setId(Long.parseLong(id));
@@ -125,11 +126,11 @@ public class SimpleRTDao implements RTDao {
 				queries.add(query);
 			}
 		}
-		String queryString = StringUtils.collectionToDelimitedString(queries, " AND ");
+		String queryString = StringUtils.collectionToDelimitedString(queries, " AND "); //$NON-NLS-1$
 		if (StringUtils.hasText(queryString)){
-			queryString+=" AND ";
+			queryString+=" AND "; //$NON-NLS-1$
 		}
-		queryString += "( Status = 'new' OR Status = 'open' )";
+		queryString += "( Status = 'new' OR Status = 'open' )"; //$NON-NLS-1$
 		@SuppressWarnings("unchecked")
 		Map<String, String> map = restTemplate.getForObject(restUrl+QUERY, Map.class, queryString);
 		List<Ticket> result = Lists.newArrayList();
@@ -158,7 +159,7 @@ public class SimpleRTDao implements RTDao {
 		addTime.setId(ticket.getId());
 		addTime.setTimeWorked(minutes);
 		addTime.setAction(TicketAction.COMMENT);
-		addTime.setText("Aktualizacja czasu pracy - automat");
+		addTime.setText(Messages.getString("SimpleRTDao.defaultComment")); //$NON-NLS-1$
 		RestStatus result = restTemplate.postForObject(restUrl+COMMENT, addTime, RestStatus.class, ticket.getId());
 		int newMinutes = minutes;
 		if (ticket.getTimeWorked()!=null){
@@ -179,11 +180,11 @@ public class SimpleRTDao implements RTDao {
 	}
 	
 	public boolean isLogged() {
-		return restTemplate.getForObject(restUrl, String.class).contains("200 Ok");
+		return restTemplate.getForObject(restUrl, String.class).contains("200 Ok"); //$NON-NLS-1$
 	}
 
 	private void fillQueueCache() {
-		String html = restTemplate.getForObject(rtUrl+"/Tools/", String.class);
+		String html = restTemplate.getForObject(rtUrl+"/Tools/", String.class); //$NON-NLS-1$
 		Matcher m = Pattern.compile(QUEUE_REGEX).matcher(html);
 		m.find();
 		HashMap<String, String> map = Maps.newHashMap(HTML_OPTION_SPLITTER.withKeyValueSeparator(HTML_KEY_VALUE_SPLITTER).split(m.group(1)));

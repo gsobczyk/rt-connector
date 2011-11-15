@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import pl.gsobczyk.rtconnector.configuration.AppConfig;
+import pl.gsobczyk.rtconnector.configuration.AppConfigTest;
 import pl.gsobczyk.rtconnector.domain.Queue;
 import pl.gsobczyk.rtconnector.service.RTDao;
 
@@ -51,7 +51,7 @@ public class SimpleRTAutocompleteServiceTest {
 		// given
 		String client = "MIG";
 		String project = "2008";
-		AnnotationConfigApplicationContext app = new AnnotationConfigApplicationContext(AppConfig.class);
+		AnnotationConfigApplicationContext app = new AnnotationConfigApplicationContext(AppConfigTest.class);
 		SimpleRTAutocompleteService autocompleteService = app.getBean(SimpleRTAutocompleteService.class);
 		
 		// when

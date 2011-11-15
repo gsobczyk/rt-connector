@@ -20,7 +20,6 @@ public class SwingTicketChooserTest {
 	@Before
 	public void before() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException{
 		dialog = new SwingTicketChooser();
-		dialog.postContruct();
 	}
 
 	@Test

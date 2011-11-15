@@ -51,7 +51,7 @@ public class TicketMessageConverterTest {
 		// when
 		converter.writeInternal(t, outputMessage);
 		// then
-		Assert.assertTrue(baos.toString().contains(TicketField.NAME.getName()+": "+t.getName()));
+		Assert.assertTrue(URLDecoder.decode(baos.toString(), Charsets.UTF_8.name()).contains(TicketField.NAME.getName()+": "+t.getName()));
 	}
 	
 	@Test

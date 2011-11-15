@@ -7,7 +7,6 @@ import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
-import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -39,9 +38,9 @@ import pl.gsobczyk.rtconnector.web.RTConverter;
 import pl.gsobczyk.tools.RelaxedX509TrustManager;
 
 @Configuration
-@ComponentScan({"pl.gsobczyk.rtconnector.service","pl.gsobczyk.rtconnector.web","pl.gsobczyk.rtconnector.ui"})
+@ComponentScan({"pl.gsobczyk.rtconnector.service","pl.gsobczyk.rtconnector.web"})
 @PropertySource(value="classpath:/app.properties", name="appProps")
-public class AppConfig {
+public class AppConfigTest {
 	@Autowired private Environment env;
 	
 	@PostConstruct
@@ -61,10 +60,6 @@ public class AppConfig {
         CredentialsProvider credendialProvider = client.getCredentialsProvider();
         credendialProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(env.getProperty(SimpleRTDao.P_USER), env.getProperty(SimpleRTDao.P_PASSWORD)));
         return client;
-	}
-	
-	@Bean public JTable table(){
-		return new JTable();
 	}
 	
 	@Bean public TicketChooser ticketChooser(){

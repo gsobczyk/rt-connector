@@ -17,8 +17,8 @@ public class FieldQuery {
 	}
 	
 	public static enum Operator{
-		LIKE("LIKE"), 
-		EQUAL("=");
+		LIKE("LIKE"),  //$NON-NLS-1$
+		EQUAL("="); //$NON-NLS-1$
 		private final String operator;
 		private Operator(String operator){
 			this.operator = operator;
@@ -43,9 +43,9 @@ public class FieldQuery {
 	@Override
 	public String toString() {
 		if (StringUtils.isNotBlank(value)){
-			return field.getName()+" "+operator+" '"+value+"'";
+			return field.getName()+" "+operator+" '"+value+"'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		} else {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 }

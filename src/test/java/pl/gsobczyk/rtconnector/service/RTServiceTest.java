@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import pl.gsobczyk.rtconnector.configuration.AppConfig;
+import pl.gsobczyk.rtconnector.configuration.AppConfigTest;
 import pl.gsobczyk.rtconnector.domain.Queue;
 import pl.gsobczyk.rtconnector.domain.Ticket;
 import pl.gsobczyk.rtconnector.web.AutocompleteChooser;
@@ -143,7 +143,7 @@ public class RTServiceTest {
 	@Test
 	public void shouldAddTime() throws Exception {
 		// given
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfigTest.class);
 		RTService rtService = context.getBean(RTService.class);
 		String query = "smietnik > contium/organizacyjne > radosław > Z#100 Testowe zadanie REST";
 		// when

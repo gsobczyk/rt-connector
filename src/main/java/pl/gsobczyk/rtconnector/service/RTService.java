@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 
 import pl.gsobczyk.rtconnector.domain.Queue;
 import pl.gsobczyk.rtconnector.domain.Ticket;
+import pl.gsobczyk.rtconnector.ui.Messages;
 import pl.gsobczyk.rtconnector.web.AutocompleteChooser;
 import pl.gsobczyk.rtconnector.web.RTAutocompleteService;
 
@@ -20,10 +21,10 @@ import com.google.common.collect.Iterables;
 
 @Service
 public class RTService {
-	public static final String DIRECT_TICKET = "^.*#(\\d+):[^>]+$";
-	public static final String PARENT_TICKET = "^.*#(\\d+):[^>]+>[^>]+$";
-	public static final String FULL_TICKET = "^(?:.*>)?([^>]+)>([^>/]+)/([^>]+)>([^>]+)>([^>]+>)?[^>]+$";
-	public static final String ONLY_QUEUE_TICKET = "^([^>]+)>(?:[^>]+>)?[^>]+$";
+	public static final String DIRECT_TICKET = "^.*#(\\d+):[^>]+$"; //$NON-NLS-1$
+	public static final String PARENT_TICKET = "^.*#(\\d+):[^>]+>[^>]+$"; //$NON-NLS-1$
+	public static final String FULL_TICKET = "^(?:.*>)?([^>]+)>([^>/]+)/([^>]+)>([^>]+)>([^>]+>)?[^>]+$"; //$NON-NLS-1$
+	public static final String ONLY_QUEUE_TICKET = "^([^>]+)>(?:[^>]+>)?[^>]+$"; //$NON-NLS-1$
 	@Autowired private RTDao rtDao;
 	@Autowired private RTAutocompleteService autocompleteService;
 	@Autowired private TicketChooser ticketChooser;
@@ -107,7 +108,7 @@ public class RTService {
 	String getClearing(String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(FULL_TICKET).matcher(ticketQuery);
 		if (!m.find()){
-			throw new QuerySyntaxException("query isn't a directQuery");
+			throw new QuerySyntaxException(Messages.getString("RTService.directQueryError")); //$NON-NLS-1$
 		} else {
 			String clearing = m.group(4).trim();
 			Iterable<String> names = autocompleteService.findClearings(clearing);
@@ -117,18 +118,18 @@ public class RTService {
 	String getProject(String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(FULL_TICKET).matcher(ticketQuery);
 		if (!m.find()){
-			throw new QuerySyntaxException("query isn't a directQuery");
+			throw new QuerySyntaxException(Messages.getString("RTService.directQueryError")); //$NON-NLS-1$
 		} else {
 			String client = m.group(2).trim();
 			String project = m.group(3).trim();
 			Iterable<String> names = autocompleteService.findProjects(client, project);
-			return autocompleteChooser.chooseBest(names, client+"/"+project);
+			return autocompleteChooser.chooseBest(names, client+"/"+project); //$NON-NLS-1$
 		}
 	}
 	String getClient(String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(FULL_TICKET).matcher(ticketQuery);
 		if (!m.find()){
-			throw new QuerySyntaxException("query isn't a directQuery");
+			throw new QuerySyntaxException(Messages.getString("RTService.directQueryError")); //$NON-NLS-1$
 		} else {
 			String client = m.group(2).trim();
 			Iterable<String> names = autocompleteService.findClients(client);
@@ -138,7 +139,7 @@ public class RTService {
 	String getQueue(String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(FULL_TICKET).matcher(ticketQuery);
 		if (!m.find()){
-			throw new QuerySyntaxException("query isn't a directQuery");
+			throw new QuerySyntaxException(Messages.getString("RTService.directQueryError")); //$NON-NLS-1$
 		} else {
 			String queue = m.group(1).trim();
 			Collection<Queue> queues = autocompleteService.findQueues(queue);
@@ -155,7 +156,7 @@ public class RTService {
 	Long getTicketId(String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(DIRECT_TICKET).matcher(ticketQuery);
 		if (!m.find()){
-			throw new QuerySyntaxException("query isn't a directQuery");
+			throw new QuerySyntaxException(Messages.getString("RTService.directQueryError")); //$NON-NLS-1$
 		} else {
 			return Long.valueOf(m.group(1).trim());
 		}
@@ -163,7 +164,7 @@ public class RTService {
 	Long getParentId(String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(PARENT_TICKET).matcher(ticketQuery);
 		if (!m.find()){
-			throw new QuerySyntaxException("query isn't a parentQuery");
+			throw new QuerySyntaxException(Messages.getString("RTService.parentQueryError")); //$NON-NLS-1$
 		} else {
 			return Long.valueOf(m.group(1).trim());
 		}
