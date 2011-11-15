@@ -9,6 +9,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -73,6 +74,10 @@ public class AppConfig {
 		return ComponentHolder.wrap(new JComboBox());
 	}
 	
+	@Bean(name="commentHolder") public ComponentHolder<JTextField> commentTextField(){
+		return ComponentHolder.wrap(new JTextField());
+	}
+		
 	@Bean public TicketChooser ticketChooser(){
 		return new SwingTicketChooser();
 	}

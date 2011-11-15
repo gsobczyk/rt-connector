@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -34,6 +35,8 @@ public class MainWindow {
 	private ComponentHolder<JTable> tableHolder;
 	@Autowired @Qualifier("comboBoxHolder")
 	private ComponentHolder<JComboBox> comboBoxHolder;
+	@Autowired @Qualifier("commentHolder")
+	private ComponentHolder<JTextField> txtCommentHolder;
 	
 	private JFrame frmRtConnector;
 	private JPanel panel;
@@ -41,6 +44,7 @@ public class MainWindow {
 	private JButton btnClean;
 	private JComboBox comboBox;
 	private JTable table;
+	private JTextField txtComment;
 
 	/**
 	 * @wbp.parser.entryPoint
@@ -49,6 +53,7 @@ public class MainWindow {
 	public void postConstruct() {
 		comboBox=comboBoxHolder.get();
 		table=tableHolder.get();
+		txtComment=txtCommentHolder.get();
 		initialize();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -93,8 +98,8 @@ public class MainWindow {
 		scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridheight = 5;
-		gbc_scrollPane.insets = new Insets(0, 0, 0, 5);
+		gbc_scrollPane.gridheight = 4;
+		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 0;
 		panel.add(scrollPane, gbc_scrollPane);
@@ -137,6 +142,15 @@ public class MainWindow {
 		
 		JButton btnExit = new JButton(Messages.getString("MainWindow.exit")); //$NON-NLS-1$
 		btnExit.addActionListener(exitAction);
+		
+		txtComment.setText(Messages.getString("MainWindow.txtComment.text")); //$NON-NLS-1$
+		GridBagConstraints gbc_txtComment = new GridBagConstraints();
+		gbc_txtComment.insets = new Insets(0, 0, 0, 5);
+		gbc_txtComment.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtComment.gridx = 0;
+		gbc_txtComment.gridy = 4;
+		panel.add(txtComment, gbc_txtComment);
+		txtComment.setColumns(10);
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
 		gbc_btnExit.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnExit.anchor = GridBagConstraints.WEST;

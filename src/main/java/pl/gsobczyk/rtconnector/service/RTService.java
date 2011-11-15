@@ -30,9 +30,9 @@ public class RTService {
 	@Autowired private TicketChooser ticketChooser;
 	@Autowired private AutocompleteChooser autocompleteChooser;
 	
-	public Ticket addTime(String ticketQuery, int minutes) throws QuerySyntaxException{
+	public Ticket addTime(String ticketQuery, int minutes, String comment) throws QuerySyntaxException{
 		Ticket ticket = findOrCreateTicket(ticketQuery);
-		rtDao.addTime(ticket, minutes);
+		rtDao.addTime(ticket, minutes, comment);
 		return ticket;
 	}
 	

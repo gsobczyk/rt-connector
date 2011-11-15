@@ -147,7 +147,7 @@ public class RTServiceTest {
 		RTService rtService = context.getBean(RTService.class);
 		String query = "smietnik > contium/organizacyjne > radosław > Z#100 Testowe zadanie REST";
 		// when
-		Ticket t = rtService.addTime(query, 82);
+		Ticket t = rtService.addTime(query, 82, null);
 		// then
 		Assert.assertNotNull(t);
 	}

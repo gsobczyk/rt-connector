@@ -12,7 +12,7 @@ public interface RTDao {
 	List<Ticket> findTickets(String queue, String client, String project, String clearing, String name, boolean onlyMyTickets);
 	List<Ticket> findTickets(Ticket parent, String name, boolean onlyMyTickets);
 	Ticket getTicket(Long id);
-	RestStatus addTime(Ticket ticket, int minutes);
+	RestStatus addTime(Ticket ticket, int minutes, String comment);
 	RestStatus takeTicket(Ticket ticket);
 	Queue getQueue(Long id);
 	List<Queue> getAllQueues();

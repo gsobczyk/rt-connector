@@ -154,12 +154,16 @@ public class SimpleRTDao implements RTDao {
 	}
 
 	@Override
-	public RestStatus addTime(Ticket ticket, int minutes) {
+	public RestStatus addTime(Ticket ticket, int minutes, String comment) {
 		Ticket addTime = new Ticket();
 		addTime.setId(ticket.getId());
 		addTime.setTimeWorked(minutes);
 		addTime.setAction(TicketAction.COMMENT);
-		addTime.setText(Messages.getString("SimpleRTDao.defaultComment")); //$NON-NLS-1$
+		if (StringUtils.hasText(comment)){
+			addTime.setText(comment);
+		} else {
+			addTime.setText(Messages.getString("SimpleRTDao.defaultComment")); //$NON-NLS-1$
+		}
 		RestStatus result = restTemplate.postForObject(restUrl+COMMENT, addTime, RestStatus.class, ticket.getId());
 		int newMinutes = minutes;
 		if (ticket.getTimeWorked()!=null){

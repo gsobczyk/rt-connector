@@ -76,7 +76,7 @@ public class SimpleRTDaoTest {
 		Integer minutes=10+ticket.getTimeWorked();
 
 		// when
-		rtDao.addTime(ticket, 10);
+		rtDao.addTime(ticket, 10, null);
 
 		// then
 		Assert.assertEquals(rtDao.getTicket(id).getTimeWorked(), minutes);
