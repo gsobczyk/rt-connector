@@ -21,26 +21,34 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
 
 
 @Component
 public class MainWindow {
 	@Autowired private ExitAction exitAction;
 	@Autowired private ReportAction reportAction;
-	@Autowired private JTable table;
+	@Autowired @Qualifier("tableHolder")
+	private ComponentHolder<JTable> tableHolder;
+	@Autowired @Qualifier("comboBoxHolder")
+	private ComponentHolder<JComboBox> comboBoxHolder;
 	
 	private JFrame frmRtConnector;
 	private JPanel panel;
 	private JScrollPane scrollPane;
 	private JButton btnClean;
 	private JComboBox comboBox;
+	private JTable table;
 
 	/**
 	 * @wbp.parser.entryPoint
 	 */
 	@PostConstruct
 	public void postConstruct() {
+		comboBox=comboBoxHolder.get();
+		table=tableHolder.get();
 		initialize();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -103,15 +111,15 @@ public class MainWindow {
 			}
 		});
 		
-		comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(TimeUnit.values()));
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.anchor = GridBagConstraints.WEST;
+		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
 		gbc_comboBox.gridx = 1;
 		gbc_comboBox.gridy = 1;
 		panel.add(comboBox, gbc_comboBox);
 		GridBagConstraints gbc_btnClean = new GridBagConstraints();
+		gbc_btnClean.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnClean.anchor = GridBagConstraints.WEST;
 		gbc_btnClean.insets = new Insets(0, 0, 5, 0);
 		gbc_btnClean.gridx = 1;
@@ -120,6 +128,7 @@ public class MainWindow {
 		
 		JButton btnReport = new JButton(Messages.getString("MainWindow.report")); //$NON-NLS-1$
 		GridBagConstraints gbc_btnReport = new GridBagConstraints();
+		gbc_btnReport.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnReport.anchor = GridBagConstraints.WEST;
 		gbc_btnReport.insets = new Insets(0, 0, 5, 0);
 		gbc_btnReport.gridx = 1;
@@ -129,6 +138,7 @@ public class MainWindow {
 		JButton btnExit = new JButton(Messages.getString("MainWindow.exit")); //$NON-NLS-1$
 		btnExit.addActionListener(exitAction);
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnExit.anchor = GridBagConstraints.WEST;
 		gbc_btnExit.gridx = 1;
 		gbc_btnExit.gridy = 4;

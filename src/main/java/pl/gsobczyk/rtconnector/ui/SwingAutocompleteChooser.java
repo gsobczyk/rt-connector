@@ -17,7 +17,10 @@ public class SwingAutocompleteChooser implements AutocompleteChooser {
 		String result = null;
 		int tries = 0;
 		while (result==null && tries++<3){
-			result = (String) JOptionPane.showInputDialog(null, "Wybierz wartość pasującą do: \n\n"+autocompleteQuery+"\n ", "Wybierz wartość", JOptionPane.QUESTION_MESSAGE, null, possibleValues, possibleValues[0]);
+			result = (String) JOptionPane.showInputDialog(null,
+					Messages.getString("SwingAutocompleteChooser.message", autocompleteQuery), 
+					Messages.getString("SwingAutocompleteChooser.title"),
+					JOptionPane.QUESTION_MESSAGE, null, possibleValues, possibleValues[0]);
 		}
 		return result;
 	}

@@ -7,6 +7,7 @@ import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -32,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 
 import pl.gsobczyk.rtconnector.service.SimpleRTDao;
 import pl.gsobczyk.rtconnector.service.TicketChooser;
+import pl.gsobczyk.rtconnector.ui.ComponentHolder;
 import pl.gsobczyk.rtconnector.ui.SwingAutocompleteChooser;
 import pl.gsobczyk.rtconnector.ui.SwingTicketChooser;
 import pl.gsobczyk.rtconnector.web.AutocompleteChooser;
@@ -63,8 +65,12 @@ public class AppConfig {
         return client;
 	}
 	
-	@Bean public JTable table(){
-		return new JTable();
+	@Bean(name="tableHolder") public ComponentHolder<JTable> table(){
+		return ComponentHolder.wrap(new JTable());
+	}
+	
+	@Bean(name="comboBoxHolder") public ComponentHolder<JComboBox> comboBox(){
+		return ComponentHolder.wrap(new JComboBox());
 	}
 	
 	@Bean public TicketChooser ticketChooser(){

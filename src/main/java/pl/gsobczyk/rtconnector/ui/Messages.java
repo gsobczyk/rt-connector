@@ -1,5 +1,6 @@
 package pl.gsobczyk.rtconnector.ui;
 
+import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -11,9 +12,9 @@ public class Messages {
 	private Messages() {
 	}
 
-	public static String getString(String key) {
+	public static String getString(String key, Object ... arguments) {
 		try {
-			return RESOURCE_BUNDLE.getString(key);
+			return MessageFormat.format(RESOURCE_BUNDLE.getString(key), arguments);
 		} catch (MissingResourceException e) {
 			return '!' + key + '!';
 		}

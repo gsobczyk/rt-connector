@@ -17,7 +17,11 @@ public class SwingTicketChooser implements TicketChooser {
 		Ticket result = null;
 		int tries = 0;
 		while (result==null && tries++<3){
-			result = (Ticket) JOptionPane.showInputDialog(null, "Wybierz Ticket pasujący do: \n\n"+ticketQuery+"\n ", "Wybierz Ticket", JOptionPane.QUESTION_MESSAGE, null, possibleValues, possibleValues[0]);
+			result = (Ticket) JOptionPane.showInputDialog(
+							null,
+							Messages.getString("SwingTicketChooser.message", ticketQuery), 
+							Messages.getString("SwingTicketChooser.title"), 
+							JOptionPane.QUESTION_MESSAGE, null, possibleValues, possibleValues[0]); //$NON-NLS-1$
 		}
 		return result;
 	}
