@@ -1,0 +1,4 @@
+bc. 
+rt.url=https://rt.contium.pl
+rt.user=user
+rt.password=hasło
