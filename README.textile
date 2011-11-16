@@ -1,0 +1,6 @@
+Zawartość pliku @src/main/resources/app.properties@:
+
+bc. 
+rt.url=https://rt.contium.pl
+rt.user=user
+rt.password=hasło
