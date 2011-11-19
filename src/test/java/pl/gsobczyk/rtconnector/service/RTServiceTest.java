@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import pl.gsobczyk.rtconnector.configuration.AppConfigTest;
+import pl.gsobczyk.rtconnector.domain.AutocompletePosition;
 import pl.gsobczyk.rtconnector.domain.Queue;
 import pl.gsobczyk.rtconnector.domain.Ticket;
 import pl.gsobczyk.rtconnector.web.AutocompleteChooser;
@@ -33,14 +34,23 @@ public class RTServiceTest {
 				queue.setName(like);
 				return Lists.newArrayList(queue);
 			}
-			@Override public Iterable<String> findProjects(String clientLike, String projectLike) {
-				return Lists.newArrayList(clientLike+"/"+projectLike);
+			@Override public Iterable<AutocompletePosition> findProjects(String clientLike, String projectLike) {
+				AutocompletePosition ap = new AutocompletePosition();
+				ap.setLabel(clientLike+"/"+projectLike);
+				ap.setValue(clientLike+"/"+projectLike);
+				return Lists.newArrayList(ap);
 			}
-			@Override public Iterable<String> findClients(String like) {
-				return Lists.newArrayList(like);
+			@Override public Iterable<AutocompletePosition> findClients(String like) {
+				AutocompletePosition ap = new AutocompletePosition();
+				ap.setLabel(like);
+				ap.setValue(like);
+				return Lists.newArrayList(ap);
 			}
-			@Override public Iterable<String> findClearings(String like) {
-				return Lists.newArrayList(like);
+			@Override public Iterable<AutocompletePosition> findClearings(String like) {
+				AutocompletePosition ap = new AutocompletePosition();
+				ap.setLabel(like);
+				ap.setValue(like);
+				return Lists.newArrayList(ap);
 			}
 		};
 		service.setAutocompleteService(autocompleteService);

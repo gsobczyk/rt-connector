@@ -1,17 +1,19 @@
 package pl.gsobczyk.rtconnector.web;
 
+import pl.gsobczyk.rtconnector.domain.AutocompletePosition;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 public interface AutocompleteChooser {
-	String chooseBest(Iterable<String> values, String autocompleteQuery);
+	String chooseBest(Iterable<AutocompletePosition> names, String autocompleteQuery);
 	public static class FirstAutocompleteChooser implements AutocompleteChooser {
-		@Override public String chooseBest(Iterable<String> values, String autocompleteQuery) {
-			Iterable<String> filtered = Iterables.filter(values, new Predicate<String>(){
-				@Override public boolean apply(String input) {
-					return !input.startsWith("(");
+		@Override public String chooseBest(Iterable<AutocompletePosition> values, String autocompleteQuery) {
+			Iterable<AutocompletePosition> filtered = Iterables.filter(values, new Predicate<AutocompletePosition>(){
+				@Override public boolean apply(AutocompletePosition input) {
+					return !input.getValue().startsWith("(");
 				}});
-			return filtered.iterator().next();
+			return filtered.iterator().next().getValue();
 		}
 	}
 }

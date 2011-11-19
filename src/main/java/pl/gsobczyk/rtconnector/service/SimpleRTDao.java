@@ -65,12 +65,16 @@ public class SimpleRTDao implements RTDao {
 		pass = env.getRequiredProperty(P_PASSWORD);
 		rtUrl = env.getRequiredProperty(P_RT_URL);
 		restUrl = rtUrl+D_REST_CONTEXT;
-		login();
+//		login();
 	}
 	
 	@PreDestroy
 	public void preDestroy(){
-		logout();
+		try {
+			logout();
+		} catch (Exception e) {
+			//doNothing
+		}
 	}
 	
 	public void login() {

@@ -35,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import pl.gsobczyk.rtconnector.service.SimpleRTDao;
 import pl.gsobczyk.rtconnector.service.TicketChooser;
 import pl.gsobczyk.rtconnector.ui.ComponentHolder;
+import pl.gsobczyk.rtconnector.ui.ProgressBarReporter;
 import pl.gsobczyk.rtconnector.ui.SwingAutocompleteChooser;
 import pl.gsobczyk.rtconnector.ui.SwingTicketChooser;
 import pl.gsobczyk.rtconnector.web.AutocompleteChooser;
@@ -60,10 +61,19 @@ public class AppConfig {
         ClientConnectionManager ccm = new SingleClientConnManager();
         SchemeRegistry sr = ccm.getSchemeRegistry();
         sr.register(new Scheme("https", 443, ssf));
-        DefaultHttpClient client = new DefaultHttpClient(ccm);
-        CredentialsProvider credendialProvider = client.getCredentialsProvider();
-        credendialProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(env.getProperty(SimpleRTDao.P_USER), env.getProperty(SimpleRTDao.P_PASSWORD)));
+		DefaultHttpClient client = new DefaultHttpClient(ccm);
         return client;
+	}
+	
+	@Bean ProgressBarReporter progressBarReporter(){
+		ProgressBarReporter progressBarReporter = new ProgressBarReporter();
+		return progressBarReporter;
+	}
+	
+	@Bean CredentialsProvider credentialsProvider(DefaultHttpClient client) {
+		CredentialsProvider credendialProvider = client.getCredentialsProvider();
+        credendialProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(env.getProperty(SimpleRTDao.P_USER), env.getProperty(SimpleRTDao.P_PASSWORD)));
+		return credendialProvider;
 	}
 	
 	@Bean(name="tableHolder") public ComponentHolder<JTable> table(){

@@ -16,4 +16,6 @@ public interface RTDao {
 	RestStatus takeTicket(Ticket ticket);
 	Queue getQueue(Long id);
 	List<Queue> getAllQueues();
+	void login();
+	void logout(); 
 }

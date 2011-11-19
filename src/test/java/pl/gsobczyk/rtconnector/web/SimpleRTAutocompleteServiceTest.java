@@ -6,12 +6,14 @@ import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.List;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import pl.gsobczyk.rtconnector.configuration.AppConfigTest;
+import pl.gsobczyk.rtconnector.domain.AutocompletePosition;
 import pl.gsobczyk.rtconnector.domain.Queue;
 import pl.gsobczyk.rtconnector.service.RTDao;
 
@@ -26,6 +28,7 @@ public class SimpleRTAutocompleteServiceTest {
 		autocomplete = new SimpleRTAutocompleteService();
 		rtDao = mock(RTDao.class);
 		autocomplete.setRtDao(rtDao);
+		autocomplete.setMapper(new ObjectMapper());
 	}
 	
 	@Test
@@ -52,12 +55,27 @@ public class SimpleRTAutocompleteServiceTest {
 		String client = "MIG";
 		String project = "2008";
 		AnnotationConfigApplicationContext app = new AnnotationConfigApplicationContext(AppConfigTest.class);
+		RTDao dao = app.getBean(RTDao.class);
+		dao.login();
 		SimpleRTAutocompleteService autocompleteService = app.getBean(SimpleRTAutocompleteService.class);
 		
 		// when
-		Iterable<String> result = autocompleteService.findProjects(client, project);
+		Iterable<AutocompletePosition> result = autocompleteService.findProjects(client, project);
 
 		// then
-		Assert.assertTrue(Lists.newArrayList(result).contains("MIG/2008-MIG"));
+		Assert.assertEquals(result.iterator().next().getValue(),"MIG/2008-MIG");
+	}
+	
+	@Test
+	public void shouldConvertAutocomplete() throws Exception {
+		// given
+		String json = "[{\"value\":\"MIG/2008-MIG\",\"label\":\"MIG/2008-MIG\"}]";
+
+		// when
+		Iterable<AutocompletePosition> result = autocomplete.extractValues(json);
+
+		// then
+		Assert.assertEquals("MIG/2008-MIG", result.iterator().next().getValue()); 
+
 	}
 }

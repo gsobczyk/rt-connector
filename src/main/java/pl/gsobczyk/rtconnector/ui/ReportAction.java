@@ -2,8 +2,6 @@ package pl.gsobczyk.rtconnector.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.BigDecimal;
-import java.util.Vector;
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -14,9 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import pl.gsobczyk.rtconnector.service.QuerySyntaxException;
 import pl.gsobczyk.rtconnector.service.RTService;
 
 @Component
@@ -28,6 +24,7 @@ public class ReportAction implements ActionListener{
 	@Autowired @Qualifier("commentHolder")
 	private ComponentHolder<JTextField> txtCommentHolder;
 	@Autowired private RTService rtService;
+	@Autowired private ProgressBarReporter progressBarReporter;
 
 	
 	@SuppressWarnings("unchecked" )
@@ -44,24 +41,25 @@ public class ReportAction implements ActionListener{
 			TimeUnit unit = (TimeUnit) comboBoxHolder.get().getSelectedItem();
 			DefaultTableModel model =  (DefaultTableModel) tableHolder.get().getModel();
 			JOptionPane.showMessageDialog(null, "Pola uzupełniono poprawnie");
-			addTimes(unit, model.getDataVector());
-			JOptionPane.showMessageDialog(null, "Uzupełniono czasy zadań w RT.");
+			progressBarReporter.report(model.getDataVector(), unit, txtCommentHolder.get().getText(), rtService);
+//			addTimes(unit, model.getDataVector());
 		}
 	}
 
-	public void addTimes(TimeUnit unit, Vector<Vector<?>> tableData) {
-		for (Vector<?> row : tableData) {
-			String ticketQuery = (String) row.get(0);
-			BigDecimal interval = (BigDecimal) row.get(1);
-			int minutes = unit.getMinutes(interval);
-			if (StringUtils.hasText(ticketQuery) && minutes>0){
-				try {
-					rtService.addTime(ticketQuery, minutes, txtCommentHolder.get().getText());
-				} catch (QuerySyntaxException e1) {
-					JOptionPane.showMessageDialog(null, e1.getLocalizedMessage(), "Błąd!", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		}
-	}
+//	public void addTimes(TimeUnit unit, Vector<Vector<?>> tableData) {
+//		rtService.login();
+//		for (Vector<?> row : tableData) {
+//			String ticketQuery = (String) row.get(0);
+//			BigDecimal interval = (BigDecimal) row.get(1);
+//			int minutes = unit.getMinutes(interval);
+//			if (StringUtils.hasText(ticketQuery) && minutes>0){
+//				try {
+//					rtService.addTime(ticketQuery, minutes, txtCommentHolder.get().getText());
+//				} catch (QuerySyntaxException e1) {
+//					JOptionPane.showMessageDialog(null, e1.getLocalizedMessage(), "Błąd!", JOptionPane.ERROR_MESSAGE);
+//				}
+//			}
+//		}
+//	}
 
 }

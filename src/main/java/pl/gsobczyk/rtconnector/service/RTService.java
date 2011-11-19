@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import pl.gsobczyk.rtconnector.domain.AutocompletePosition;
 import pl.gsobczyk.rtconnector.domain.Queue;
 import pl.gsobczyk.rtconnector.domain.Ticket;
 import pl.gsobczyk.rtconnector.ui.Messages;
@@ -29,6 +30,14 @@ public class RTService {
 	@Autowired private RTAutocompleteService autocompleteService;
 	@Autowired private TicketChooser ticketChooser;
 	@Autowired private AutocompleteChooser autocompleteChooser;
+
+	public void login(){
+		rtDao.login();
+	}
+	
+	public void logout(){
+		rtDao.logout();
+	}
 	
 	public Ticket addTime(String ticketQuery, int minutes, String comment) throws QuerySyntaxException{
 		Ticket ticket = findOrCreateTicket(ticketQuery);
@@ -111,7 +120,7 @@ public class RTService {
 			throw new QuerySyntaxException(Messages.getString("RTService.directQueryError")); //$NON-NLS-1$
 		} else {
 			String clearing = m.group(4).trim();
-			Iterable<String> names = autocompleteService.findClearings(clearing);
+			Iterable<AutocompletePosition> names = autocompleteService.findClearings(clearing);
 			return autocompleteChooser.chooseBest(names, clearing);
 		}
 	}
@@ -122,7 +131,7 @@ public class RTService {
 		} else {
 			String client = m.group(2).trim();
 			String project = m.group(3).trim();
-			Iterable<String> names = autocompleteService.findProjects(client, project);
+			Iterable<AutocompletePosition> names = autocompleteService.findProjects(client, project);
 			return autocompleteChooser.chooseBest(names, client+"/"+project); //$NON-NLS-1$
 		}
 	}
@@ -132,7 +141,7 @@ public class RTService {
 			throw new QuerySyntaxException(Messages.getString("RTService.directQueryError")); //$NON-NLS-1$
 		} else {
 			String client = m.group(2).trim();
-			Iterable<String> names = autocompleteService.findClients(client);
+			Iterable<AutocompletePosition> names = autocompleteService.findClients(client);
 			return autocompleteChooser.chooseBest(names, client);
 		}
 	}
@@ -143,9 +152,12 @@ public class RTService {
 		} else {
 			String queue = m.group(1).trim();
 			Collection<Queue> queues = autocompleteService.findQueues(queue);
-			Iterable<String> names = Iterables.transform(queues, new Function<Queue, String>(){
-				@Override public String apply(Queue input) {
-					return input.getName();
+			Iterable<AutocompletePosition> names = Iterables.transform(queues, new Function<Queue, AutocompletePosition>(){
+				@Override public AutocompletePosition apply(Queue input) {
+					AutocompletePosition pos = new AutocompletePosition();
+					pos.setValue(input.getName());
+					pos.setLabel(input.getName());
+					return pos;
 				}});
 			return autocompleteChooser.chooseBest(names, queue);
 		}

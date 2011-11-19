@@ -77,8 +77,9 @@ public class MainWindow {
 	private void initialize() {
 		frmRtConnector = new JFrame();
 		frmRtConnector.setTitle(Messages.getString("MainWindow.title")); //$NON-NLS-1$
-		frmRtConnector.setBounds(100, 100, 450, 300);
+		frmRtConnector.setBounds(100, 100, 650, 300);
 		frmRtConnector.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmRtConnector.addWindowListener(exitAction);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0};
@@ -110,8 +111,9 @@ public class MainWindow {
 		panel.add(scrollPane, gbc_scrollPane);
 		
 		scrollPane.setViewportView(table);
+		
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setModel(createEmptyDataModel());
+		createEmptyDataModel(table);
 		table.addKeyListener(new ClipboardKeyAdapter(table));
 		
 		comboBox.setModel(new DefaultComboBoxModel(TimeUnit.values()));
@@ -158,7 +160,7 @@ public class MainWindow {
 		btnClean = new JButton(Messages.getString("MainWindow.clean")); //$NON-NLS-1$
 		btnClean.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				table.setModel(createEmptyDataModel());
+				createEmptyDataModel(table);
 			}
 		});
 		GridBagConstraints gbc_btnClean = new GridBagConstraints();
@@ -201,7 +203,7 @@ public class MainWindow {
 		btnReport.addActionListener(reportAction);
 	}
 
-	public DefaultTableModel createEmptyDataModel() {
+	public DefaultTableModel createEmptyDataModel(final JTable table) {
 		DefaultTableModel model = new DefaultTableModel(
 			new Object[][] {{null, null}},
 			new String[] {
@@ -238,6 +240,9 @@ public class MainWindow {
 			}
 		};
 		model.addTableModelListener(listener);
+		table.setModel(model);
+		table.getColumnModel().getColumn(0).setPreferredWidth(550);
+		table.getColumnModel().getColumn(1).setPreferredWidth(70);
 		return model;
 	}
 
