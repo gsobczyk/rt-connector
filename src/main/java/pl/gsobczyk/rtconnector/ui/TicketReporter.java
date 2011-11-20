@@ -40,6 +40,7 @@ public class TicketReporter extends SwingWorker<Void, Void> {
 	    	int steps = tableData.size()+1;
 	    	taskOutput.append("Logowanie do RT"+NEW_LINE);
 			rtService.login();
+	    	taskOutput.append("Zalogowano"+NEW_LINE);
 			int step=1;
 			setProgress(100/steps*step++);
 			for (Vector<?> row : tableData) {

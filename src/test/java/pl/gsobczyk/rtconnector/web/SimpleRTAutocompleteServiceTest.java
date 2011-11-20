@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.List;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +27,6 @@ public class SimpleRTAutocompleteServiceTest {
 		autocomplete = new SimpleRTAutocompleteService();
 		rtDao = mock(RTDao.class);
 		autocomplete.setRtDao(rtDao);
-		autocomplete.setMapper(new ObjectMapper());
 	}
 	
 	@Test
@@ -67,15 +65,18 @@ public class SimpleRTAutocompleteServiceTest {
 	}
 	
 	@Test
-	public void shouldConvertAutocomplete() throws Exception {
+	public void shouldFindClearings() throws Exception {
 		// given
-		String json = "[{\"value\":\"MIG/2008-MIG\",\"label\":\"MIG/2008-MIG\"}]";
-
+		String clearing = "przycho";
+		AnnotationConfigApplicationContext app = new AnnotationConfigApplicationContext(AppConfigTest.class);
+		RTDao dao = app.getBean(RTDao.class);
+		dao.login();
+		SimpleRTAutocompleteService autocompleteService = app.getBean(SimpleRTAutocompleteService.class);
+		
 		// when
-		Iterable<AutocompletePosition> result = autocomplete.extractValues(json);
+		Iterable<AutocompletePosition> result = autocompleteService.findClearings(clearing);
 
 		// then
-		Assert.assertEquals("MIG/2008-MIG", result.iterator().next().getValue()); 
-
+		Assert.assertEquals(result.iterator().next().getValue(),"Radosław Przychoda");
 	}
 }
