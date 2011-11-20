@@ -190,7 +190,7 @@ public class MainWindow {
 		gbc_txtComment.insets = new Insets(0, 0, 0, 5);
 		gbc_txtComment.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtComment.gridx = 0;
-		gbc_txtComment.gridy = 4;
+		gbc_txtComment.gridy = 5;
 		panel.add(txtComment, gbc_txtComment);
 		txtComment.setColumns(10);
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
