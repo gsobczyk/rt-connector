@@ -7,7 +7,9 @@ import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -24,6 +26,7 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
 import pl.gsobczyk.rtconnector.service.SimpleRTDao;
 import pl.gsobczyk.rtconnector.service.TicketChooser;
 import pl.gsobczyk.rtconnector.ui.ComponentHolder;
+import pl.gsobczyk.rtconnector.ui.Messages;
 import pl.gsobczyk.rtconnector.ui.ProgressBarReporter;
 import pl.gsobczyk.rtconnector.ui.SwingAutocompleteChooser;
 import pl.gsobczyk.rtconnector.ui.SwingTicketChooser;
@@ -65,8 +69,8 @@ public class AppConfig {
         return client;
 	}
 	
-	@Bean ProgressBarReporter progressBarReporter(){
-		ProgressBarReporter progressBarReporter = new ProgressBarReporter();
+	@Bean ProgressBarReporter progressBarReporter(@Qualifier("mainWindowFrameHolder") ComponentHolder<JFrame> frameHolder){
+		ProgressBarReporter progressBarReporter = new ProgressBarReporter(frameHolder.get());
 		return progressBarReporter;
 	}
 	
@@ -74,6 +78,10 @@ public class AppConfig {
 		CredentialsProvider credendialProvider = client.getCredentialsProvider();
         credendialProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(env.getProperty(SimpleRTDao.P_USER), env.getProperty(SimpleRTDao.P_PASSWORD)));
 		return credendialProvider;
+	}
+	
+	@Bean(name="mainWindowFrameHolder") public ComponentHolder<JFrame> frame(){
+		return ComponentHolder.wrap(new JFrame());
 	}
 	
 	@Bean(name="tableHolder") public ComponentHolder<JTable> table(){
@@ -94,6 +102,10 @@ public class AppConfig {
 	
 	@Bean public AutocompleteChooser autocompleteChooser(){
 		return new SwingAutocompleteChooser();
+	}
+	
+	@Bean(name="btnReportHolder") public ComponentHolder<JButton> btnReportHolder(){
+		return ComponentHolder.wrap(new JButton(Messages.getString("MainWindow.report"))); //$NON-NLS-1$
 	}
 	
 	@Bean public RestTemplate restTemplate(HttpClient httpClient, Collection<RTConverter<?>> converters){

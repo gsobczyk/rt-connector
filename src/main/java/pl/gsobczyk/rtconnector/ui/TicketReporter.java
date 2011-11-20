@@ -2,7 +2,7 @@ package pl.gsobczyk.rtconnector.ui;
 
 import java.awt.Toolkit;
 import java.math.BigDecimal;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -17,14 +17,14 @@ import pl.gsobczyk.rtconnector.service.RTService;
 
 public class TicketReporter extends SwingWorker<Void, Void> {
 	private static final String NEW_LINE = "\n";
-	private final Vector<Vector<?>> tableData;
+	private final List<TicketEntry> tableData;
 	private final JTextArea taskOutput;
 	private final RTService rtService;
 	private final TimeUnit timeUnit;
 	private final String comment;
 	
-	TicketReporter(Vector<Vector<?>> tableData, TimeUnit timeUnit, String comment, JTextArea taskOutput, RTService rtService){
-		this.tableData = tableData;
+	TicketReporter(List<TicketEntry> data, TimeUnit timeUnit, String comment, JTextArea taskOutput, RTService rtService){
+		this.tableData = data;
 		this.timeUnit = timeUnit;
 		this.comment = comment;
 		this.taskOutput = taskOutput;
@@ -43,9 +43,9 @@ public class TicketReporter extends SwingWorker<Void, Void> {
 	    	taskOutput.append("Zalogowano"+NEW_LINE);
 			int step=1;
 			setProgress(100/steps*step++);
-			for (Vector<?> row : tableData) {
-				String ticketQuery = (String) row.get(0);
-				BigDecimal interval = (BigDecimal) row.get(1);
+			for (TicketEntry row : tableData) {
+				String ticketQuery = row.getTicket();
+				BigDecimal interval = row.getInterval();
 				int minutes = timeUnit.getMinutes(interval);
 				if (StringUtils.hasText(ticketQuery) && minutes>=0){
 					try {

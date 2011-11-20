@@ -2,6 +2,9 @@ package pl.gsobczyk.rtconnector.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -13,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import pl.gsobczyk.rtconnector.service.RTService;
+import com.google.common.collect.Lists;
 
 @Component
 public class ReportAction implements ActionListener{
@@ -23,7 +26,6 @@ public class ReportAction implements ActionListener{
 	private ComponentHolder<JComboBox> comboBoxHolder;
 	@Autowired @Qualifier("commentHolder")
 	private ComponentHolder<JTextField> txtCommentHolder;
-	@Autowired private RTService rtService;
 	@Autowired private ProgressBarReporter progressBarReporter;
 
 	
@@ -41,7 +43,11 @@ public class ReportAction implements ActionListener{
 			TimeUnit unit = (TimeUnit) comboBoxHolder.get().getSelectedItem();
 			DefaultTableModel model =  (DefaultTableModel) tableHolder.get().getModel();
 			JOptionPane.showMessageDialog(null, "Pola uzupełniono poprawnie");
-			progressBarReporter.report(model.getDataVector(), unit, txtCommentHolder.get().getText(), rtService);
+			List<TicketEntry> data = Lists.newArrayList();
+			for (Vector<?> entry : (Vector<Vector<?>>)model.getDataVector()) {
+				data.add(new TicketEntry((String)entry.get(0), (BigDecimal)entry.get(1)));
+			}
+			progressBarReporter.report(data, unit, txtCommentHolder.get().getText());
 //			addTimes(unit, model.getDataVector());
 		}
 	}

@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
@@ -40,6 +41,10 @@ public class MainWindow {
 	private ComponentHolder<JComboBox> comboBoxHolder;
 	@Autowired @Qualifier("commentHolder")
 	private ComponentHolder<JTextField> txtCommentHolder;
+	@Autowired @Qualifier("mainWindowFrameHolder")
+	private ComponentHolder<JFrame> frmRtConnectorHolder;
+	@Autowired @Qualifier("btnReportHolder")
+	private ComponentHolder<JButton> btnReportHolder;
 	
 	private JFrame frmRtConnector;
 	private JPanel panel;
@@ -50,6 +55,7 @@ public class MainWindow {
 	private JTextField txtComment;
 	private JButton addButton;
 	private JButton removeButton;
+	private JButton btnReport;
 
 	/**
 	 * @wbp.parser.entryPoint
@@ -59,6 +65,8 @@ public class MainWindow {
 		comboBox=comboBoxHolder.get();
 		table=tableHolder.get();
 		txtComment=txtCommentHolder.get();
+		frmRtConnector=frmRtConnectorHolder.get();
+		btnReport=btnReportHolder.get();
 		initialize();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -75,7 +83,8 @@ public class MainWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frmRtConnector = new JFrame();
+//		frmRtConnector = new JFrame();
+		frmRtConnector.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/icon.png")));
 		frmRtConnector.setTitle(Messages.getString("MainWindow.title")); //$NON-NLS-1$
 		frmRtConnector.setBounds(100, 100, 650, 300);
 		frmRtConnector.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -172,7 +181,6 @@ public class MainWindow {
 		gbc_btnClean.gridy = 1;
 		panel.add(btnClean, gbc_btnClean);
 		
-		JButton btnReport = new JButton(Messages.getString("MainWindow.report")); //$NON-NLS-1$
 		GridBagConstraints gbc_btnReport = new GridBagConstraints();
 		gbc_btnReport.gridwidth = 2;
 		gbc_btnReport.fill = GridBagConstraints.HORIZONTAL;

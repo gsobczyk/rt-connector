@@ -35,19 +35,24 @@ import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import pl.gsobczyk.rtconnector.service.RTService;
 
@@ -57,12 +62,16 @@ public class ProgressBarReporter extends JPanel implements PropertyChangeListene
 	private JTextArea taskOutput;
 	private TicketReporter task;
 	private JProgressBar progressBar;
-	private JFrame frame;
+	private JDialog frame;
+	@Autowired private RTService service;
+	@Autowired @Qualifier("btnReportHolder")
+	private ComponentHolder<JButton> btnReportHolder;
 
-	public ProgressBarReporter() {
-		frame = new JFrame();
+	public ProgressBarReporter(JFrame jFrame) {
+		frame = new JDialog(jFrame, "Raportowanie");
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/icon.png")));
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 410, 0 };
 		gridBagLayout.rowHeights = new int[] { 10, 227, 0, 0 };
@@ -129,12 +138,14 @@ public class ProgressBarReporter extends JPanel implements PropertyChangeListene
 			if (progress == 100) {
 				closeButton.setEnabled(true);
 				setCursor(null);
+				btnReportHolder.get().setEnabled(true);
 			}
 		}
 	}
 	
-	public void report(Vector<Vector<?>> data, TimeUnit timeUnit, String comment, RTService service){
+	public void report(List<TicketEntry> data, TimeUnit timeUnit, String comment){
 		closeButton.setEnabled(false);
+		btnReportHolder.get().setEnabled(false);
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		// Instances of javax.swing.SwingWorker are not reusuable, so
 		// we create new instances as needed.
