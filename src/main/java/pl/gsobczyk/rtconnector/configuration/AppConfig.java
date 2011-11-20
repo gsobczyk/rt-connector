@@ -99,7 +99,7 @@ public class AppConfig {
 	@Bean public RestTemplate restTemplate(HttpClient httpClient, Collection<RTConverter<?>> converters){
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
-		restTemplate.getMessageConverters().addAll(converters);
+		restTemplate.getMessageConverters().addAll(0, converters);
 		return restTemplate;
 	}
 	

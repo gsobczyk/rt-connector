@@ -108,7 +108,7 @@ public class Ticket {
 		}
 		String name="";
 		if (id!=null){
-			name = "RT#"+id+":";
+			name = "#"+id+":";
 		}
 		if (StringUtils.hasText(this.name)){
 			name+=" "+this.name;

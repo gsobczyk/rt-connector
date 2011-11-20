@@ -136,7 +136,7 @@ public class RTServiceTest {
 	public void shouldGetProject() throws Exception {
 		// given
 		// when
-		String project = service.getProject(FULL_QUERY);
+		String project = service.getProject("client", FULL_QUERY);
 		// then
 		Assert.assertEquals("client/project", project);
 	}

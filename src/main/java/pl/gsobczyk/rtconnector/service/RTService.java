@@ -68,7 +68,7 @@ public class RTService {
 		} else if (ticketQuery.matches(FULL_TICKET)){
 			String queue = getQueue(ticketQuery);
 			String client = getClient(ticketQuery);
-			String project = getProject(ticketQuery);
+			String project = getProject(client, ticketQuery);
 			String name = getName(ticketQuery);
 			String clearing = getClearing(ticketQuery);
 			List<Ticket> tickets = rtDao.findTickets(queue, client, project, clearing, name, true);
@@ -124,12 +124,11 @@ public class RTService {
 			return autocompleteChooser.chooseBest(names, clearing);
 		}
 	}
-	String getProject(String ticketQuery) throws QuerySyntaxException{
+	String getProject(String client, String ticketQuery) throws QuerySyntaxException{
 		Matcher m = Pattern.compile(FULL_TICKET).matcher(ticketQuery);
 		if (!m.find()){
 			throw new QuerySyntaxException(Messages.getString("RTService.directQueryError")); //$NON-NLS-1$
 		} else {
-			String client = m.group(2).trim();
 			String project = m.group(3).trim();
 			Iterable<AutocompletePosition> names = autocompleteService.findProjects(client, project);
 			return autocompleteChooser.chooseBest(names, client+"/"+project); //$NON-NLS-1$
