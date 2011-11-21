@@ -2,6 +2,7 @@ package pl.gsobczyk.rtconnector.ui;
 
 import java.awt.Toolkit;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -40,18 +41,18 @@ public class TicketReporter extends SwingWorker<Void, Void> {
 	    	int steps = tableData.size()+1;
 	    	taskOutput.append("Logowanie do RT"+NEW_LINE);
 			rtService.login();
-	    	taskOutput.append("Zalogowano"+NEW_LINE);
+	    	taskOutput.append("Zalogowano, następuje raportowanie z komentarzem: "+comment+NEW_LINE);
 			int step=1;
 			setProgress(100/steps*step++);
 			for (TicketEntry row : tableData) {
 				String ticketQuery = row.getTicket();
 				BigDecimal interval = row.getInterval();
 				int minutes = timeUnit.getMinutes(interval);
-				if (StringUtils.hasText(ticketQuery) && minutes>=0){
+				if (StringUtils.hasText(ticketQuery) && minutes>0){
 					try {
 						taskOutput.append("Raportowanie: "+ticketQuery+NEW_LINE);
 						Ticket result = rtService.addTime(ticketQuery, minutes, comment);
-						taskOutput.append("Zaraportowano ticket: "+result+NEW_LINE);
+						taskOutput.append(MessageFormat.format("Zaraportowano ticket: {0}, minut: {1}"+NEW_LINE, result, minutes));
 					} catch (QuerySyntaxException e1) {
 						JOptionPane.showMessageDialog(null, e1.getLocalizedMessage(), "Błąd!", JOptionPane.ERROR_MESSAGE);
 					}

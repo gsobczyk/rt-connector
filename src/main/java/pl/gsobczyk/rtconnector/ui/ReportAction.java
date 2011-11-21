@@ -42,13 +42,15 @@ public class ReportAction implements ActionListener{
 		if (correct){
 			TimeUnit unit = (TimeUnit) comboBoxHolder.get().getSelectedItem();
 			DefaultTableModel model =  (DefaultTableModel) tableHolder.get().getModel();
-			JOptionPane.showMessageDialog(null, "Pola uzupełniono poprawnie");
-			List<TicketEntry> data = Lists.newArrayList();
-			for (Vector<?> entry : (Vector<Vector<?>>)model.getDataVector()) {
-				data.add(new TicketEntry((String)entry.get(0), (BigDecimal)entry.get(1)));
+			int result = JOptionPane.showConfirmDialog(null, "Pola uzupełniono poprawnie?", "Pytanie", JOptionPane.YES_NO_OPTION);
+			if (result==0){
+				List<TicketEntry> data = Lists.newArrayList();
+				for (Vector<?> entry : (Vector<Vector<?>>)model.getDataVector()) {
+					data.add(new TicketEntry((String)entry.get(0), (BigDecimal)entry.get(1)));
+				}
+				progressBarReporter.report(data, unit, txtCommentHolder.get().getText());
+//				addTimes(unit, model.getDataVector());
 			}
-			progressBarReporter.report(data, unit, txtCommentHolder.get().getText());
-//			addTimes(unit, model.getDataVector());
 		}
 	}
 

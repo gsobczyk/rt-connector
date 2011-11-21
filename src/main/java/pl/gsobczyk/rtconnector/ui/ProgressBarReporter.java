@@ -145,6 +145,7 @@ public class ProgressBarReporter extends JPanel implements PropertyChangeListene
 	
 	public void report(List<TicketEntry> data, TimeUnit timeUnit, String comment){
 		closeButton.setEnabled(false);
+		progressBar.setValue(0);
 		btnReportHolder.get().setEnabled(false);
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		// Instances of javax.swing.SwingWorker are not reusuable, so
