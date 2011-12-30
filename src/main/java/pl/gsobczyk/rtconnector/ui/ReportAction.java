@@ -42,7 +42,7 @@ public class ReportAction implements ActionListener{
 		if (correct){
 			TimeUnit unit = (TimeUnit) comboBoxHolder.get().getSelectedItem();
 			DefaultTableModel model =  (DefaultTableModel) tableHolder.get().getModel();
-			int result = JOptionPane.showConfirmDialog(null, "Pola uzupełniono poprawnie?", "Pytanie", JOptionPane.YES_NO_OPTION);
+			int result = JOptionPane.showConfirmDialog(null, "Pola uzupełniono poprawnie.\nKontynuować raportowanie?", "Pytanie", JOptionPane.YES_NO_OPTION);
 			if (result==0){
 				List<TicketEntry> data = Lists.newArrayList();
 				for (Vector<?> entry : (Vector<Vector<?>>)model.getDataVector()) {
