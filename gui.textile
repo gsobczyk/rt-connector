@@ -1,0 +1,117 @@
+h1. Menu
+
+* Plik
+** Ustawienia
+** Zakończ
+* Zadania
+** Nowe zadanie...
+** Pracuj nad >
+*** _Ostatnie X zadań_
+** Przerwa / Koniec przerwy (kontunuuj pracę)
+** Koniec zadania
+* Raporty
+** Obecny >
+*** Dzień (Dziś)
+*** Tydzień
+*** Miesiąc
+** Poprzedni >
+*** Wczoraj
+*** Tydzień
+*** Miesiąc
+** Raport z zakresu dat...
+** -----
+** Wykres z zakresu dat...
+* Widok
+** Pokaż obecny dzień/tydzień/miesiąc
+** Pokaż poprzedni dzień/tydzień/miesiąc
+** -----
+** @[ ]@ Dni
+** @[x]@ Tygodnie
+** @[ ]@ Miesiąc
+* Pomoc
+** O programie
+
+h2. Menu kontekstowe zadania
+
+* Zacznij pracę
+* Dodaj podzadanie...
+* -----
+* Kopiuj
+* Wklej
+* Archiwizuj
+* Usuń
+* -----
+* Edytuj/Właściwości
+* Pokaż zarejestrowane czasy/wpisy
+
+h2. Menu kontekstowe zarejestrowanego czasu
+
+* Edytuj
+
+h1. Widoki
+
+h2. Edycja zadania
+
+* Nazwa
+* RT
+** Ticket
+** Właściciel
+** Klient
+** Projekt
+** Rozliczający
+* Atrybuty
+** W archiwum / ukryte
+* Przepracowane godziny łącznie
+
+h2. Zadania
+
+* Położenie
+** po lewej
+* Polecenia
+** Szukaj: @[          ] x@
+** Filtrowanie
+*** @[x]@ aktywne
+*** @[ ]@ zarchiwizowane
+*** @[ ]@ wszystkie
+*** @[ ]@ posiadające niewyeksportowane wpisy
+** Zwiń wszystkie
+
+h2. Edycja zadania
+
+* Położenie
+** na dole lub widok edycji
+
+h2. Zarejestrowane czasy/wpisy
+
+* Położenie
+** na dole
+* Zakres
+** obecne/ostatnie zadanie (Link with editor)
+* Filtrowanie
+** wyeksportowane
+** niewyeksportowane
+** wszystkie
+* Kolumny
+** od
+** do
+** czas 
+** wyeksportowano
+
+h2. Widok tygodnia
+
+h1. Ustawienia
+
+* Ostatnie zadania
+** Pokazuj ostatnich @[ ]@ zadań
+* Raportowanie
+** Adres RT
+** Użytkownik
+** Hasło
+** Zaokrąglanie czasów
+* Przyciągaj do siatki
+
+h1. Kolejność implementacji:
+
+# perspektywa z wykresami (kalendarzem)
+# drzewo projektów
+# menu
