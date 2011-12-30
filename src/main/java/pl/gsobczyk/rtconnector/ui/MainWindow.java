@@ -3,11 +3,13 @@ package pl.gsobczyk.rtconnector.ui;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.swing.DefaultComboBoxModel;
@@ -28,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import com.google.common.collect.Lists;
 
 
 
@@ -83,8 +87,12 @@ public class MainWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-//		frmRtConnector = new JFrame();
-		frmRtConnector.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/icon.png")));
+		//		frmRtConnector = new JFrame();
+		List<Image> images = Lists.newArrayList();
+		images.add(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/icon16.png")));
+		images.add(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/icon32.png")));
+		images.add(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/icon128.png")));
+		frmRtConnector.setIconImages(images);
 		frmRtConnector.setTitle(Messages.getString("MainWindow.title")); //$NON-NLS-1$
 		frmRtConnector.setBounds(100, 100, 650, 300);
 		frmRtConnector.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
