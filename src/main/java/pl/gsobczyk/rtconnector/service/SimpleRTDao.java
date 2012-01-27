@@ -4,12 +4,14 @@ import static pl.gsobczyk.rtconnector.service.FieldQuery.Operator.EQUAL;
 import static pl.gsobczyk.rtconnector.service.FieldQuery.Operator.LIKE;
 import static pl.gsobczyk.rtconnector.web.RestAction.COMMENT;
 import static pl.gsobczyk.rtconnector.web.RestAction.CREATE;
-import static pl.gsobczyk.rtconnector.web.RestAction.EDIT;
 import static pl.gsobczyk.rtconnector.web.RestAction.GET;
 import static pl.gsobczyk.rtconnector.web.RestAction.LOGIN;
 import static pl.gsobczyk.rtconnector.web.RestAction.LOGOUT;
 import static pl.gsobczyk.rtconnector.web.RestAction.QUERY;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +26,8 @@ import javax.annotation.PreDestroy;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -178,13 +182,19 @@ public class SimpleRTDao implements RTDao {
 	}
 
 	@Override
-	public RestStatus takeTicket(Ticket ticket) {
-		Ticket take = new Ticket();
-		take.setId(ticket.getId());
-		take.setOwner(user);
-		RestStatus result = restTemplate.postForObject(restUrl+EDIT, take, RestStatus.class, ticket.getId());
-		ticket.setOwner(take.getOwner());
-		return result;
+	public boolean takeTicket(Ticket ticket) {
+		URI uri;
+		try {
+			uri = new URI(rtUrl+"/Ticket/Display.html?Action=Take;id="+ticket.getId());
+			ClientHttpRequest request = restTemplate.getRequestFactory().createRequest(uri, HttpMethod.GET);
+			request.execute();
+			ticket.setOwner(user);
+			return true;
+		} catch (URISyntaxException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		}
 	}
 	
 	public boolean isLogged() {

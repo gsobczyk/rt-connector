@@ -4,3 +4,5 @@
 /*.jpage
 /Timesheet*
 /src/main/resources/app.properties
+/target
+/bin

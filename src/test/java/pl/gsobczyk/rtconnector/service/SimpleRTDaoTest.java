@@ -145,13 +145,13 @@ public class SimpleRTDaoTest {
 	public void shouldTakeTicket() throws Exception {
 		// given
 		Ticket ticket = new Ticket();
-		ticket.setId(70670L);
+		ticket.setId(74405L);
 
 		// when
-		RestStatus result = rtDao.takeTicket(ticket);
+		boolean result = rtDao.takeTicket(ticket);
 
 		// then
-		result.getStatus().startsWith("200");
+		Assert.assertTrue(result);
 	}
 
 }
