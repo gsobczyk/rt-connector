@@ -22,12 +22,15 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -83,8 +86,28 @@ public class SimpleRTDao implements RTDao {
 	
 	public void login() {
 		if (!isLogged()){
+			if (!StringUtils.hasText(user)){
+				initiateUser();
+			}
+			if (!StringUtils.hasText(pass)){
+				initiatePass();
+			}
 			restTemplate.getForObject(restUrl+LOGIN, String.class, user, pass);
 		}
+	}
+
+	private void initiateUser() {
+		user = JOptionPane.showInputDialog(null, Messages.getString("RTDao.user"), Messages.getString("RTDao.user"), JOptionPane.QUESTION_MESSAGE);
+	}
+
+	private void initiatePass() {
+		JPasswordField pwd = new JPasswordField();  
+		int action = -1;
+		while (action<0){
+			action = JOptionPane.showConfirmDialog(null, pwd, Messages.getString("RTDao.pass"), JOptionPane.OK_CANCEL_OPTION);
+		}
+		pass = new String(pwd.getPassword());
+		
 	}
 
 	public void logout() {
@@ -187,8 +210,9 @@ public class SimpleRTDao implements RTDao {
 		try {
 			uri = new URI(rtUrl+"/Ticket/Display.html?Action=Take;id="+ticket.getId());
 			ClientHttpRequest request = restTemplate.getRequestFactory().createRequest(uri, HttpMethod.GET);
-			request.execute();
+			ClientHttpResponse response = request.execute();
 			ticket.setOwner(user);
+			response.close();
 			return true;
 		} catch (URISyntaxException e) {
 			return false;
