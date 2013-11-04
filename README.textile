@@ -1,6 +1,11 @@
-Zawartość pliku @src/main/resources/app.properties@:
+h1. Zawartość pliku @src/main/resources/app.properties@:
 
 bc. 
 rt.url=https://rt.contium.pl
 rt.user=user
+#hasło nie jest wymagane, jeśli nie zostanie podane - zostanie wyświetlone pytanie o hasło przy próbie raportowania
 rt.password=hasło
+
+h1. Screenshot
+
+!https://raw.github.com/gsobczyk/rt-connector/master/rt-connector.png!
